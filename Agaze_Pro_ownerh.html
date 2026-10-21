@@ -1,0 +1,2886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1B5E3B" />
+  <title>Agaze Pro</title>
+  <style>
+    :root{--bg:#f3f6f4;--surface:#fff;--ink:#111827;--muted:#6b7280;--leather:#1B5E3B;--good:#15803d;--coral:#c45c4a;--line:#e5ebe7;--pink:#e8f5e9;--green:#dcfce7;--purple:#e8f5e9;--yellow:#f0fdf4}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;padding-bottom:70px;-webkit-tap-highlight-color:transparent}
+    .hidden{display:none!important}
+    .center{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{background:var(--surface);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    h1{font-size:22px;color:var(--leather)} h2{font-size:17px;margin-bottom:10px}
+    .sub{font-size:13px;color:var(--muted);margin:4px 0 12px;line-height:1.4}
+    label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:10px 0 4px}
+    input,select{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:16px;background:#fff;outline:none}
+    input:focus,select:focus{border-color:var(--leather)}
+    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:650;cursor:pointer;margin-top:10px}
+    .btn-primary{background:var(--leather);color:#fff}.btn-secondary{background:#e8f0eb;color:var(--leather)}.btn-danger{background:#fde8e4;color:var(--coral)}
+    .btn-sm{width:auto;padding:6px 10px;font-size:12px;margin:0 4px 0 0;display:inline-block}
+    .err{color:var(--coral);font-size:13px;margin-top:8px}
+    .header{background:var(--leather);color:#fff;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top))}
+    .header .hi{font-size:18px;font-weight:700}.header .biz{font-size:13px;opacity:.88;margin-top:2px}.header .lic{font-size:13px;opacity:.7;margin-top:6px}
+    .screen{padding:14px;max-width:560px;margin:0 auto}
+    @media (min-width:700px){
+      .screen{max-width:720px;padding:20px 24px}
+      .stat-grid{grid-template-columns:repeat(4,1fr)!important}
+      nav.bottom{max-width:720px}
+    }
+    @media (min-width:1024px){
+      .screen{max-width:960px;padding:24px 32px}
+      nav.bottom{max-width:960px}
+      body{padding-bottom:78px}
+      .card{padding:18px 20px}
+      input,select{padding:14px 16px}
+    }
+    @media (min-width:700px) and (max-width:1023px){
+      .stat-grid{grid-template-columns:1fr 1fr 1fr 1fr!important}
+    }
+    .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .stat-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+    .stat-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px}
+    .icon-pink{background:var(--pink)}.icon-green{background:var(--green)}.icon-purple{background:var(--purple)}.icon-yellow{background:var(--yellow)}
+    .stat-card .num{font-size:20px;font-weight:700}.stat-card .lbl{font-size:13px;color:var(--muted);margin-top:2px}.stat-card.profit .num{color:var(--good)}
+    nav.bottom{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--line);display:flex;max-width:560px;margin:0 auto;z-index:40;padding-bottom:env(safe-area-inset-bottom,0)}
+    nav.bottom button{flex:1;background:none;margin:0;padding:8px 0 6px;font-size:13px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;border-radius:0}
+    nav.bottom button .ico{font-size:18px} nav.bottom button.on{color:var(--leather)}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{text-align:left;padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
+    th{color:var(--muted);font-size:13px;font-weight:600}
+    .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:11px 16px;border-radius:10px;font-size:13px;z-index:50;max-width:90%;text-align:center}
+    .chip{display:inline-block;background:#e8f0eb;color:var(--leather);padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .cart-line{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;padding:12px 0;border-bottom:1px solid var(--line);gap:8px;font-size:13px}
+    .cart-line input{
+      width:100%;min-width:0;padding:10px 12px;font-size:16px;
+      -moz-appearance:textfield;appearance:textfield;
+    }
+    .cart-line input::-webkit-outer-spin-button,
+    .cart-line input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    input[type=number]{-moz-appearance:textfield;appearance:textfield}
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    .cart-field{flex:1;min-width:72px}
+    .cart-field label{font-size:13px;color:var(--muted);margin:0 0 4px;font-weight:600}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .prod-pick{padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;background:#fff}
+    .prod-pick:active{background:#e8f0eb}.prod-pick b{color:var(--leather)}
+    .empty{text-align:center;color:var(--muted);padding:20px;font-size:13px}
+
+    .receipt-overlay{
+      position:fixed;inset:0;background:#0f172a;z-index:100;
+      display:flex;flex-direction:column;align-items:center;
+      overflow:auto;padding:12px;padding-bottom:24px;
+    }
+    .receipt-paper{
+      background:#fff;color:#111;width:100%;max-width:400px;
+      padding:24px 20px;border-radius:4px;margin:12px 0 16px;
+      font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;
+    }
+    .receipt-paper .biz{text-align:center;font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:.02em}
+    .receipt-paper .meta{font-size:12px;margin:4px 0;color:#333}
+    .receipt-paper .line{border-top:1px dashed #999;margin:10px 0}
+    .receipt-paper .item{margin:8px 0}
+    .receipt-paper .item-code{font-weight:700}
+    .receipt-paper .item-row{display:flex;justify-content:space-between;margin-top:2px}
+    .receipt-paper .totals .row{display:flex;justify-content:space-between;margin:4px 0}
+    .receipt-paper .grand{font-weight:800;font-size:15px}
+    .receipt-paper .thanks{text-align:center;margin-top:14px;font-size:12px;line-height:1.45}
+    .receipt-actions{width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px}
+
+@media print{
+  body *{visibility:hidden}
+  #receipt-overlay,#receipt-overlay *{visibility:visible}
+  #receipt-overlay{position:absolute;inset:0;background:#fff;padding:0}
+  .receipt-actions{display:none!important}
+  .receipt-paper{box-shadow:none;max-width:100%}
+}
+
+    .menu-wrap{position:relative;display:inline-block}
+    .menu-dots{background:none;border:none;font-size:18px;padding:4px 8px;margin:0;width:auto;color:var(--ink);cursor:pointer}
+    .menu-pop{position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:30;min-width:120px;display:none}
+    .menu-pop.open{display:block}
+    .menu-pop button{margin:0;border-radius:0;text-align:left;padding:10px 14px;font-size:13px;width:100%}
+  
+body.dark{background:#0f172a;color:#e2e8f0}
+body.dark .card,body.dark .panel,body.dark .sheet{background:#1e293b;color:#e2e8f0}
+body.dark input,body.dark select,body.dark textarea{background:#0f172a;color:#f1f5f9;border-color:#334155}
+body.dark .sub{color:#94a3b8}
+body.dark .nav,body.dark .bottom-nav,body.dark footer{background:#1e293b;border-color:#334155}
+body.dark table th{color:#94a3b8}
+body.dark .btn-secondary{background:#334155;color:#f1f5f9}
+body.dark .menu-pop{background:#1e293b;border-color:#475569}
+#toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 18px;border-radius:12px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;font-size:14px}
+#toast.show{opacity:1;pointer-events:auto}
+#customer-dropdown{background:#fff}
+body.dark #customer-dropdown{background:#1e293b;border-color:#475569}
+body.dark #customer-dropdown button{color:#e2e8f0}
+#view-owed{overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+.more-list{display:flex;flex-direction:column;gap:0;padding:4px 0 20px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.more-item{
+  display:flex;align-items:center;gap:14px;width:100%;
+  background:#fff;border:none;border-radius:0;padding:14px 16px;
+  border-bottom:1px solid #f0f0f0;box-shadow:none;cursor:pointer;margin:0;
+  text-align:left;font-size:16px;font-weight:600;color:var(--ink);
+}
+.more-item:last-child{border-bottom:none}
+
+.more-item .mi-ico{
+  width:40px;height:40px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:20px;flex-shrink:0;background:#f3f4f6;
+}
+.more-item .mi-label{flex:1}
+.more-item .mi-arrow{color:#c4c4c4;font-size:18px;font-weight:400}
+.more-item .mi-toggle{margin-left:auto}
+body.dark .more-item{background:#1e293b;color:#e2e8f0}
+.backup-days{font-size:13px;color:#6b7280;margin:8px 4px 0;font-weight:500}
+.cust-folder{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden;background:#fff}
+.cust-folder-head{padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.cust-folder-body{display:none;padding:0 14px 14px;border-top:1px solid var(--line)}
+.cust-folder.open .cust-folder-body{display:block}
+.sale-line{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.sale-line:last-child{border-bottom:none}
+
+
+.switch{position:relative;display:inline-block;width:52px;height:30px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:999px;transition:.2s}
+.switch .slider:before{content:"";position:absolute;height:24px;width:24px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked + .slider{background:#22c55e}
+.switch input:checked + .slider:before{transform:translateX(22px)}
+.pay-beside{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;flex-wrap:wrap}
+</style>
+<style>
+body.dark{--ink:#fff;--muted:#e2e8f0;--surface:#1e293b}
+body.dark .sub,body.dark label,body.dark .lbl,body.dark table th,body.dark table td,body.dark .backup-days,body.dark .mi-label,body.dark .sale-line,body.dark .empty,body.dark h2{color:#fff}
+body.dark h1{color:#4ade80}
+body.dark .stat-card{background:#1e293b!important;border:1px solid #475569;box-shadow:none}
+body.dark .stat-card .num{color:#4ade80}
+body.dark .stat-card .stat-icon{background:#0f172a!important}
+body.dark .more-list,body.dark .cust-folder{background:#1e293b;border-color:#334155}
+body.dark .more-item{border-bottom:1px solid #334155}
+body.dark .more-item .mi-ico{background:#0f172a}
+body.dark .more-item .mi-arrow{color:#94a3b8}
+</style>
+<style>
+body.dark{--bg:#0f172a;--pink:#1e293b;--green:#1e293b;--purple:#1e293b;--yellow:#1e293b;color:#fff}
+html:has(body.dark){background:#0f172a}
+body.dark body{background:#0f172a!important}
+body.dark input{background:#1e293b!important}
+body.dark select{background:#1e293b!important}
+body.dark .btn-secondary{background:#1e293b!important}
+body.dark .btn-danger{background:#1e293b!important}
+body.dark .chip{background:#1e293b!important}
+body.dark .prod-pick{background:#1e293b!important}
+body.dark .prod-pick:active{background:#1e293b!important}
+body.dark .menu-pop{background:#1e293b!important}
+body.dark #customer-dropdown{background:#1e293b!important}
+body.dark .more-list{background:#1e293b!important}
+body.dark .more-item{background:#1e293b!important}
+body.dark .more-item .mi-ico{background:#1e293b!important}
+body.dark .cust-folder{background:#1e293b!important}
+body.dark input[readonly],body.dark [style*="background:#f0ebe4"],body.dark [style*="background:#fff"],body.dark [style*="background:#fafafa"],body.dark [style*="background:#f3f4f6"],body.dark [style*="background:#e8f0eb"],body.dark [style*="background:#fde8e4"]{background:#0f172a!important;color:#fff!important}
+body.dark .screen,body.dark #view-owed,body.dark #owed-list{background:transparent}
+</style>
+<style>html,body{touch-action:pan-x pan-y}</style>
+<style>th{line-height:1.15;vertical-align:bottom}</style>
+<style>
+#agz-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:9999;display:none;background:linear-gradient(90deg,transparent,#22c55e,transparent);background-size:50% 100%;background-repeat:no-repeat;animation:agzbar 1s linear infinite}
+body.agz-busy #agz-bar{display:block}
+@keyframes agzbar{from{background-position:-50% 0}to{background-position:150% 0}}
+body.role-employee nav.bottom button[data-v="home"],body.role-employee nav.bottom button[data-v="stock"],body.role-employee .owner-only{display:none!important}
+body.role-employee #view-history th:nth-child(8),body.role-employee #view-history td:nth-child(8),body.role-employee #view-history .menu-wrap{display:none}
+
+.credit-box{margin-top:14px;padding:14px;border-radius:16px;background:#e8f5e9;border:1px solid #c8e6c9}
+.credit-box .credit-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:#1B5E3B;margin-bottom:8px}
+.credit-box label{color:#1B5E3B;font-weight:600}
+.due-pills{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.due-pill{
+  border:1.5px solid #a7d3b5;background:#fff;color:#1B5E3B;border-radius:999px;
+  padding:8px 12px;font-size:13px;font-weight:650;cursor:pointer;margin:0;width:auto;
+}
+.due-pill.on{background:#d8f3e0;border-color:#1B5E3B;box-shadow:0 0 0 2px rgba(27,94,59,.15)}
+.credit-box input{background:#fff}
+.balance-line{font-size:13px;color:#6b7280;margin-top:8px}
+</style>
+</head>
+<body>
+<div id="agz-bar"></div>
+<div id="screen-boot" class="center"><div style="width:100%;max-width:400px"><div class="card" style="text-align:center">
+<h1>አጋዥ</h1><p style="font-size:18px;font-weight:700;color:var(--leather);margin-top:-4px">Agaze Pro</p>
+<p class="sub">Loading…</p>
+</div></div></div>
+
+<div id="screen-license" class="center hidden"><div style="width:100%;max-width:400px"><div class="card">
+<h1>አጋዥ</h1><p style="text-align:center;font-size:18px;font-weight:700;color:var(--leather);margin-top:-4px">Agaze Pro</p>
+<p class="sub">Your business helper. Log in to open your business.</p>
+<div id="au-name-wrap" class="hidden"><label>Your name *</label><input id="au-name" autocomplete="name"/></div>
+<label>Email</label><input id="au-email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false"/>
+<label>Password</label><input id="au-pass" type="password" autocomplete="current-password"/>
+<div id="au-signup-wrap" class="hidden">
+<label>Access code *</label><input id="au-code" autocomplete="off" autocapitalize="characters" spellcheck="false"/>
+<label>Business type (owners only)</label>
+<select id="au-type"><option value="">— Select —</option><option value="importer">📦 Importer</option><option value="shoe">👟 Shoe Seller</option></select>
+</div>
+<p class="err hidden" id="lic-err"></p>
+<button type="button" class="btn-primary" id="au-go" onclick="authSubmit()">Log in</button>
+<button type="button" class="btn-secondary" id="au-toggle" onclick="authToggle()">Create account</button>
+<button type="button" class="btn-secondary" id="au-forgot" onclick="authForgot()">Forgot password?</button>
+</div></div></div>
+
+<div id="screen-setup" class="center hidden"><div style="width:100%;max-width:360px"><div class="card">
+<h1 style="color:var(--leather)">አጋዥ</h1><p class="sub" style="text-align:center;font-weight:600">Agaze Pro</p><h2 style="margin-top:12px">Create PIN</h2>
+<p class="sub">This PIN locks the app on this phone.</p>
+<label>Create PIN (6+ digits) *</label><input id="su-pin" type="password" inputmode="numeric"/>
+<label>Confirm PIN *</label><input id="su-pin2" type="password" inputmode="numeric"/>
+<button type="button" class="btn-primary" onclick="saveSetup()">Continue</button>
+</div></div></div>
+
+<div id="screen-pin" class="center hidden"><div style="width:100%;max-width:360px"><div class="card">
+<h1 style="color:var(--leather)">አጋዥ</h1><p class="sub" style="text-align:center;font-weight:600">Agaze Pro</p><h2 style="margin-top:12px">Enter PIN</h2><p class="sub" id="pin-label"></p>
+<input id="pin-in" type="password" inputmode="numeric"/>
+<p class="err hidden" id="pin-err">Wrong PIN</p>
+<button type="button" class="btn-primary" onclick="checkPin()">Unlock</button>
+</div></div></div>
+
+<div id="screen-app" class="hidden">
+<div class="header">
+<div class="hi" id="app-hi">Home</div>
+<div class="biz" id="app-biz"></div>
+<div class="lic" id="app-lic"></div>
+</div>
+
+<div id="view-home" class="screen">
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-icon icon-pink">👜</div><div class="num" id="st-qty">0</div><div class="lbl" id="st-qty-lbl">Quantity sold today</div></div>
+<div class="stat-card"><div class="stat-icon icon-green">💵</div><div class="num" id="st-sales">0</div><div class="lbl">Total sales today (birr)</div></div>
+<div class="stat-card"><div class="stat-icon icon-green">✅</div><div class="num" id="st-paid">0</div><div class="lbl">Paid today (cash/bank)</div></div>
+<div class="stat-card"><div class="stat-icon icon-pink">🧾</div><div class="num" id="st-credit">0</div><div class="lbl">Credit owed from today</div></div>
+<div class="stat-card profit"><div class="stat-icon icon-purple">📈</div><div class="num" id="st-profit">0</div><div class="lbl">Profit today (birr)</div></div>
+<div class="stat-card profit"><div class="stat-icon icon-yellow">💰</div><div class="num" id="st-month">0</div><div class="lbl">Profit this month (birr)</div></div>
+</div>
+<p class="sub" style="margin-top:8px">Total sales = paid now + credit still owed. Check the bank against <b>Paid today</b>.</p>
+<div id="credit-alert" class="hidden" style="margin-top:10px;padding:12px 14px;border-radius:12px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;font-size:14px;font-weight:600;line-height:1.45"></div>
+<div id="credit-soon" class="hidden" style="margin-top:8px;padding:12px 14px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:14px;font-weight:600;line-height:1.45"></div>
+</div>
+
+<div id="view-stock" class="screen hidden">
+<div class="stat-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:12px">
+<div class="stat-card"><div class="stat-icon icon-pink">📦</div><div class="num" id="sk-items">0</div><div class="lbl">Total items</div></div>
+<div class="stat-card"><div class="stat-icon icon-green">🔢</div><div class="num" id="sk-units">0</div><div class="lbl" id="sk-units-lbl">Total qty</div></div>
+<div class="stat-card profit"><div class="stat-icon icon-yellow">💰</div><div class="num" id="sk-value">0</div><div class="lbl">Total stock value</div></div>
+</div>
+<div class="card"><h2>Add to stock</h2>
+<label id="lbl-code">Code *</label><input id="p-code"/>
+
+<div id="fields-simple"><label id="lbl-qty">Quantity to add *</label><input id="p-qty" type="number" min="1" inputmode="numeric"/></div>
+<div id="fields-importer" class="hidden"><div class="row2">
+<div><label>Cartons to add *</label><input id="p-cartons" type="number" min="1" inputmode="numeric"/></div>
+<div><label>Pcs per carton *</label><input id="p-ppc" type="number" min="1" inputmode="numeric"/></div>
+</div></div>
+<label id="lbl-cost">Cost per unit (birr) *</label><input id="p-cost" type="number" min="0" step="0.01" inputmode="decimal"/>
+<button type="button" class="btn-primary" onclick="addProduct()">Save to stock</button>
+</div>
+<div class="card">
+<input type="search" id="stock-search" oninput="renderStock()" style="margin-bottom:10px"/>
+<div style="overflow-x:auto"><table><thead id="stock-head"></thead><tbody id="stock-body"></tbody></table></div>
+<p class="empty hidden" id="stock-empty">No products in stock yet</p>
+</div></div>
+
+
+<div id="view-owed" class="hidden" style="position:fixed;inset:0;z-index:60;background:var(--bg,#f3f6f4);display:none;flex-direction:column;overflow:hidden">
+<div style="flex-shrink:0;padding:12px 14px;padding-top:calc(12px + env(safe-area-inset-top));background:var(--leather,#1B5E3B);color:#fff">
+<button type="button" onclick="closeOwedScreen()" style="background:rgba(255,255,255,.2);color:#fff;border:none;padding:10px 16px;border-radius:10px;font-size:15px;font-weight:700;margin:0;width:auto">← Back</button>
+<div style="font-size:18px;font-weight:800;margin-top:10px">Credit</div>
+</div>
+<div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px;padding-bottom:40px">
+<div class="card">
+<p class="sub">Customers with unpaid balance. Use Receive payment when they pay — balance goes down.</p>
+<p style="font-size:18px;font-weight:800;margin:8px 0">Total owed to you: <span id="owed-total">0</span></p>
+<div id="owed-list"></div>
+<p class="empty hidden" id="owed-empty">No open balances</p>
+</div>
+</div>
+</div>
+
+<div id="edit-sale-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:none;align-items:flex-end;justify-content:center">
+  <div class="card" style="width:100%;max-width:480px;border-radius:16px 16px 0 0;margin:0;max-height:90vh;overflow-y:auto">
+    <h2 style="margin-top:0">Edit sale</h2>
+    <p class="sub">Change the values below, then save.</p>
+    <label>Code</label>
+    <input id="es-code" autocomplete="off" autocapitalize="characters"/>
+    <div id="es-ctn-wrap" class="hidden"><label>Cartons</label>
+    <input id="es-cartons" inputmode="decimal" type="text" oninput="esCartonsChanged()"/></div>
+    <label>Quantity (pcs)</label>
+    <input id="es-qty" inputmode="numeric" type="text"/>
+    <label>Price per pcs</label>
+    <input id="es-price" inputmode="decimal" type="text" onblur="formatMoneyInput(this)"/>
+    <label>Customer</label>
+    <input id="es-customer" autocomplete="off"/>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button type="button" class="btn-secondary" style="flex:1;margin:0" onclick="closeEditSale()">Cancel</button>
+      <button type="button" class="btn-primary" style="flex:1;margin:0" onclick="saveEditSale()">Save</button>
+    </div>
+  </div>
+</div>
+<div id="pay-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:none;align-items:flex-end;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <div class="card" style="width:100%;max-width:480px;border-radius:16px 16px 0 0;margin:0;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch">
+    <h2 style="margin-top:0">Receive payment</h2>
+    <p class="sub" id="pay-order-info"></p>
+    <label>Amount received</label>
+    <input id="pay-amount" inputmode="decimal" type="text" onblur="formatMoneyInput(this)"/>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button type="button" class="btn-secondary" style="flex:1" onclick="closePayModal()">Cancel</button>
+      <button type="button" class="btn-primary" style="flex:1" onclick="submitPayment()">Save payment</button>
+    </div>
+    <h3 style="margin-top:16px">Payment history (every payment)</h3>
+    <div id="pay-history"></div>
+  </div>
+</div>
+
+<div id="view-sell" class="screen hidden">
+<div class="card">
+<label>Customer name (leave empty for walk-in)</label>
+<div style="position:relative">
+<input id="s-customer" autocomplete="off" oninput="onCustomerInput()" onfocus="onCustomerInput()" onblur="setTimeout(function(){if(!window._pickingCust)hideCustomerDropdown()},250)"/>
+<div id="customer-dropdown" class="hidden" style="position:absolute;left:0;right:0;top:100%;z-index:50;background:#fff;border:1px solid var(--line);border-radius:10px;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.12)"></div>
+</div>
+<div id="known-customer-fields" class="hidden">
+<label>Phone</label>
+<input id="s-phone" inputmode="tel" autocomplete="tel"/>
+</div>
+</div>
+<div class="card">
+<h2>Order <span class="chip" id="cart-count">0</span></h2>
+<div id="cart-box"></div>
+<div style="display:flex;justify-content:space-between;margin-top:12px;font-weight:700"><span>Total</span><span id="cart-total">0</span></div>
+<div id="paid-now-fields" class="hidden">
+<div class="credit-box">
+  <div class="credit-title">💵 Amount paid now</div>
+  <input id="s-paid" inputmode="decimal" type="text" placeholder="0" oninput="updateBalanceHint()" onblur="formatMoneyInput(this)"/>
+  <p class="balance-line" id="s-balance-hint">Credit (balance) will show here</p>
+
+  <div id="credit-due-wrap" class="hidden" style="margin-top:12px">
+    <div class="credit-title">📅 When should the credit be paid?</div>
+    <div class="due-pills">
+      <button type="button" class="due-pill on" id="due-pill-14" onclick="selectDuePill(14)">After 2 weeks</button>
+      <button type="button" class="due-pill" id="due-pill-30" onclick="selectDuePill(30)">After 1 month</button>
+      <button type="button" class="due-pill" id="due-pill-custom" onclick="selectDuePill('custom')">Custom date</button>
+    </div>
+    <div id="custom-due-wrap" class="hidden">
+      <label id="lbl-due-date">Pay-by date</label>
+      <input id="s-due-date" type="date" onchange="updateDueEthHint()"/>
+      <p class="sub" id="s-due-eth-hint"></p>
+    </div>
+    <input id="s-days" type="hidden" value="14"/>
+  </div>
+</div>
+</div>
+<button type="button" class="btn-primary" onclick="completeSale()">Complete sale</button>
+<button type="button" class="btn-secondary" onclick="clearCart()">Clear order</button>
+</div>
+<div class="card">
+<h2>Stock</h2>
+<p class="sub">Tap a product to add it to the order above.</p>
+    <input type="search" id="sell-search" placeholder="Search code…" oninput="renderSellList()" style="margin-bottom:8px"/>
+<div id="sell-list"></div>
+<p class="empty hidden" id="sell-empty">No stock available</p>
+</div>
+</div>
+
+<div id="view-history" class="screen hidden">
+<div class="card">
+<input type="search" id="hist-search" oninput="renderHistory()" style="margin-bottom:10px"/>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Date</th><th>Customer</th><th>Code</th><th>Total<br>ctn</th><th>Total<br>pcs</th><th>Price</th><th>Total</th><th>Profit</th><th></th></tr></thead>
+<tbody id="hist-body"></tbody>
+</table></div>
+<p class="empty hidden" id="hist-empty">No sales yet</p>
+</div></div>
+
+<div id="view-more" class="screen hidden">
+<div id="more-menu">
+<div style="font-size:20px;font-weight:800;margin:4px 0 14px;display:flex;align-items:center;gap:8px">
+  <span style="cursor:pointer;padding:4px 8px" onclick="nav('home')">←</span> More
+</div>
+<div class="more-list">
+  <button type="button" class="more-item owner-only" onclick="openMore('business')"><span class="mi-ico">🏪</span><span class="mi-label">Profile</span><span class="mi-arrow">›</span></button>
+  <button type="button" class="more-item owner-only" onclick="openMore('employees')"><span class="mi-ico">👥</span><span class="mi-label">Employees</span><span class="mi-arrow">›</span></button>
+  <button type="button" class="more-item owner-only" onclick="toggleActivityMenu()"><span class="mi-ico">⚡</span><span class="mi-label">Activity</span><span class="mi-arrow" id="act-caret">›</span></button>
+  <div id="activity-submenu" class="hidden owner-only" style="padding-left:8px;display:none;flex-direction:column;gap:8px">
+    <button type="button" class="more-item" onclick="openMore('act-low')"><span class="mi-ico">📦</span><span class="mi-label">Low stock</span><span class="mi-arrow">›</span></button>
+    <button type="button" class="more-item" onclick="openMore('act-best')"><span class="mi-ico">🏆</span><span class="mi-label">Best selling</span><span class="mi-arrow">›</span></button>
+    <button type="button" class="more-item" onclick="openMore('act-stock')"><span class="mi-ico">📥</span><span class="mi-label">Stock history</span><span class="mi-arrow">›</span></button>
+  </div>
+  <button type="button" class="more-item owner-only" onclick="openMore('report')"><span class="mi-ico">📊</span><span class="mi-label">Report</span><span class="mi-arrow">›</span></button>
+  <button type="button" class="more-item owner-only" onclick="openMore('subscription')"><span class="mi-ico">📅</span><span class="mi-label">Subscription</span><span class="mi-arrow">›</span></button>
+  <button type="button" class="more-item" onclick="openMore('pin')"><span class="mi-ico">🔒</span><span class="mi-label">Change PIN</span><span class="mi-arrow">›</span></button>
+  <button type="button" class="more-item owner-only" onclick="openOwedScreen('more')"><span class="mi-ico">👤</span><span class="mi-label">Credit</span><span class="mi-arrow">›</span></button>
+  <div class="more-item" style="cursor:default">
+    <span class="mi-ico">🌙</span><span class="mi-label">Dark mode</span>
+    <label class="switch" onclick="event.stopPropagation()">
+      <input type="checkbox" id="sw-dark" onchange="toggleDarkMode(this.checked)"/>
+      <span class="slider"></span>
+    </label>
+  </div>
+  <div class="more-item" style="cursor:default">
+    <span class="mi-ico">📅</span><span class="mi-label">Ethiopian date</span>
+    <label class="switch" onclick="event.stopPropagation()">
+      <input type="checkbox" id="sw-eth" onchange="toggleEthDate(this.checked)"/>
+      <span class="slider"></span>
+    </label>
+  </div>
+  <button type="button" class="more-item" onclick="lockApp()"><span class="mi-ico">🔐</span><span class="mi-label">Lock app</span><span class="mi-arrow">›</span></button>
+  <button type="button" class="more-item" onclick="signOutApp()"><span class="mi-ico">🚪</span><span class="mi-label">Sign out</span><span class="mi-arrow">›</span></button>
+</div>
+</div>
+<div id="more-sub" class="hidden">
+<button type="button" class="btn-secondary" style="margin-bottom:12px" onclick="closeMoreSub()">← Back</button>
+
+<div id="ms-business" class="hidden card">
+<h2>Profile</h2>
+<label>Business name</label><input id="mb-name"/>
+<label>Owner name</label><input id="mb-owner"/>
+<label>Phone</label><input id="mb-phone" inputmode="tel"/>
+<label>Business type</label>
+<select id="mb-type">
+<option value="importer">Importer</option>
+<option value="shoe">Shoe Seller</option>
+</select>
+<label>Currency</label><input id="mb-currency"/>
+<button type="button" class="btn-primary" onclick="saveBusiness()">Save business</button>
+</div>
+
+<div id="ms-act-low" class="hidden card">
+<h2>Low stock</h2>
+<div id="act-low" class="sub">Loading…</div>
+</div>
+<div id="ms-act-best" class="hidden card">
+<h2>Best selling</h2>
+<p class="sub">Top products by quantity sold</p>
+<div id="act-best" class="sub">Loading…</div>
+</div>
+<div id="ms-act-stock" class="hidden card">
+<h2>Stock history</h2>
+<p class="sub">When products were added to stock — cartons and pcs</p>
+<div id="act-stockhist" class="sub">Loading…</div>
+</div>
+
+<div id="ms-report" class="hidden card">
+<h2>Report</h2>
+<div style="display:flex;gap:6px;margin-bottom:12px">
+<button type="button" class="btn-secondary btn-sm" id="rep-d" onclick="showReport('day')">Daily</button>
+<button type="button" class="btn-secondary btn-sm" id="rep-m" onclick="showReport('month')">Monthly</button>
+<button type="button" class="btn-secondary btn-sm" id="rep-y" onclick="showReport('year')">Yearly</button>
+</div>
+<div class="stat-grid">
+<div class="stat-card"><div class="num" id="rep-sales">0</div><div class="lbl">Total sales (birr)</div></div>
+<div class="stat-card profit"><div class="num" id="rep-profit">0</div><div class="lbl">Profit (birr)</div></div>
+<div class="stat-card"><div class="num" id="rep-qty">0</div><div class="lbl">Quantity sold</div></div>
+<div class="stat-card"><div class="num" id="rep-count">0</div><div class="lbl">Sales lines</div></div>
+</div>
+<p class="sub" id="rep-label" style="margin-top:10px"></p>
+</div>
+
+<div id="ms-subscription" class="hidden card">
+<h2>Subscription</h2>
+<p class="sub" id="sub-status"></p>
+<div class="stat-grid">
+<div class="stat-card"><div class="num" id="sub-days">—</div><div class="lbl">Days remaining</div></div>
+<div class="stat-card"><div class="num" id="sub-until" style="font-size:14px">—</div><div class="lbl">Expires</div></div>
+</div>
+<p class="sub" style="margin-top:12px">To renew your subscription, contact the Admin.</p>
+</div>
+
+<div id="ms-employees" class="hidden card">
+<h2>Employees</h2>
+<p class="sub">Create a code and give it to your employee. They open the app, tap Create account, and type the code. Each code works once.</p>
+<button type="button" class="btn-primary" onclick="createEmpCode()">Create employee code</button>
+<div id="emp-new" class="hidden">
+<div id="emp-new-code" style="font-size:28px;font-weight:800;letter-spacing:4px;text-align:center;color:var(--leather);background:var(--pink);border-radius:12px;padding:14px;margin:12px 0"></div>
+<div style="display:flex;gap:8px"><button type="button" class="btn-secondary" style="flex:1;margin:0" onclick="empCopy(document.getElementById('emp-new-code').textContent)">Copy</button><button type="button" class="btn-primary" style="flex:1;margin:0" onclick="empSend(document.getElementById('emp-new-code').textContent)">Send</button></div>
+</div>
+<h3 style="margin-top:16px">Unused codes</h3>
+<div id="emp-codes" class="sub">—</div>
+<h3 style="margin-top:16px">Your employees</h3>
+<div id="emp-list" class="sub">—</div>
+</div>
+
+<div id="ms-pin" class="hidden card">
+<h2>Change PIN</h2>
+<label>Current PIN</label><input id="pin-old" type="password" inputmode="numeric"/>
+<label>New PIN (6+ digits)</label><input id="pin-new" type="password" inputmode="numeric"/>
+<label>Confirm new PIN</label><input id="pin-new2" type="password" inputmode="numeric"/>
+<button type="button" class="btn-primary" onclick="changePin()">Save PIN</button>
+</div>
+</div>
+</div>
+
+<nav class="bottom">
+<button type="button" class="on" data-v="home" onclick="nav('home')"><span class="ico">🏠</span>Home</button>
+<button type="button" data-v="stock" onclick="nav('stock')"><span class="ico">📦</span>Stock</button>
+<button type="button" data-v="sell" onclick="nav('sell')"><span class="ico">🛒</span>Sell</button>
+<button type="button" data-v="history" onclick="nav('history')"><span class="ico">📋</span>History</button>
+<button type="button" data-v="more" onclick="nav('more')"><span class="ico">⋯</span>More</button>
+</nav>
+</div>
+
+<div id="receipt-overlay" class="receipt-overlay hidden">
+  <div class="receipt-paper" id="receipt-paper"></div>
+  <div class="receipt-actions">
+    <button type="button" class="btn-primary" onclick="closeReceipt()">Done</button>
+    <button type="button" class="btn-secondary" onclick="shareReceipt()">Share</button>
+  </div>
+</div>
+<div id="toast" class="toast hidden"></div>
+<div id="edit-prod-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:flex;align-items:flex-end;justify-content:center;padding:0">
+  <div class="card" style="width:100%;max-width:480px;border-radius:16px 16px 0 0;margin:0;max-height:90vh;overflow:auto">
+    <h2 style="margin-top:0">Edit product</h2>
+    <input type="hidden" id="ep-old-code"/>
+    <label>Code</label><input id="ep-code" autocomplete="off"/>
+    <div id="ep-carton-fields">
+      <label>Cartons</label><input id="ep-cartons" inputmode="decimal" type="text"/>
+      <label>Pcs per carton</label><input id="ep-ppc" inputmode="decimal" type="text"/>
+    </div>
+    <div id="ep-qty-fields">
+      <label>Quantity (pcs)</label><input id="ep-qty" inputmode="decimal" type="text"/>
+    </div>
+    <label>Cost per pcs</label><input id="ep-cost" inputmode="decimal" type="text"/>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button type="button" class="btn-secondary" style="flex:1" onclick="closeEditProd()">Cancel</button>
+      <button type="button" class="btn-primary" style="flex:1" onclick="saveEditProd()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+/* license check material */
+
+const TYPES={
+importer:{label:'Importer',usesCartons:true,codeLabel:'Product / Shoe code',nameLabel:'Product name (optional)',qtyLabel:'Cartons',costLabel:'Cost per pcs',unit:'pcs',soldLbl:'Total cartons sold today'},
+shoe:{label:'Shoe Seller',usesCartons:false,codeLabel:'Shoe code',nameLabel:'Shoe name (optional)',qtyLabel:'Pcs to add',costLabel:'Cost per pcs',unit:'pcs',soldLbl:'Quantity sold today'},
+electronics:{label:'Electronics',usesCartons:false,codeLabel:'Product code',nameLabel:'Product name',qtyLabel:'Quantity to add',costLabel:'Cost per item',unit:'pcs',soldLbl:'Quantity sold today'},
+stationery:{label:'Stationery',usesCartons:false,codeLabel:'Product code',nameLabel:'Product name',qtyLabel:'Quantity to add',costLabel:'Cost per product',unit:'pcs',soldLbl:'Quantity sold today'},
+book:{label:'Book Shop',usesCartons:false,codeLabel:'Book code',nameLabel:'Book name',qtyLabel:'Copies to add',costLabel:'Cost per book',unit:'pcs',soldLbl:'Quantity sold today'},
+cosmetic:{label:'Cosmetic',usesCartons:false,codeLabel:'Product code',nameLabel:'Product name',qtyLabel:'Quantity to add',costLabel:'Cost per product',unit:'pcs',soldLbl:'Quantity sold today'}
+};
+let biz=null,cart=[];
+function cfg(){return TYPES[(biz&&biz.type)||'shoe']||TYPES.shoe}
+const DB_NAME='ledger_offline_v2';let db;
+function openDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,3);req.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('meta'))d.createObjectStore('meta');if(!d.objectStoreNames.contains('products'))d.createObjectStore('products',{keyPath:'code'});if(!d.objectStoreNames.contains('sales')){const s=d.createObjectStore('sales',{keyPath:'id',autoIncrement:true});s.createIndex('byDate','dateKey')}
+if(!d.objectStoreNames.contains('stockHistory')){const h=d.createObjectStore('stockHistory',{keyPath:'id',autoIncrement:true});h.createIndex('byDate','dateKey')}
+if(!d.objectStoreNames.contains('orders')){const o=d.createObjectStore('orders',{keyPath:'id',autoIncrement:true});o.createIndex('byCustomer','customer');o.createIndex('byDate','dateKey')}
+if(!d.objectStoreNames.contains('payments')){const pay=d.createObjectStore('payments',{keyPath:'id',autoIncrement:true});pay.createIndex('byOrder','orderId')}};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error)})}
+
+function addOrder(row){return new Promise((res,rej)=>{const r=db.transaction('orders','readwrite').objectStore('orders').add(row);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function putOrder(row){return new Promise((res,rej)=>{const r=db.transaction('orders','readwrite').objectStore('orders').put(row);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function allOrders(){return new Promise((res,rej)=>{const r=db.transaction('orders').objectStore('orders').getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+function getOrder(id){return new Promise((res,rej)=>{const r=db.transaction('orders').objectStore('orders').get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function addPayment(row){return new Promise((res,rej)=>{const r=db.transaction('payments','readwrite').objectStore('payments').add(row);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function paymentsForOrder(orderId){return new Promise((res,rej)=>{
+  const r=db.transaction('payments').objectStore('payments').getAll();
+  r.onsuccess=()=>{
+    const all=r.result||[];
+    const id=orderId;
+    res(all.filter(p=>p.orderId==id||String(p.orderId)===String(id)));
+  };
+  r.onerror=()=>rej(r.error);
+})}
+
+function addStockHistory(row){return new Promise((res,rej)=>{const r=db.transaction('stockHistory','readwrite').objectStore('stockHistory').add(row);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function allStockHistory(){return new Promise((res,rej)=>{const r=db.transaction('stockHistory','readonly').objectStore('stockHistory').getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+function metaGet(k){return new Promise((res,rej)=>{const r=db.transaction('meta','readonly').objectStore('meta').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function metaSet(k,v){return new Promise((res,rej)=>{const tx=db.transaction('meta','readwrite');tx.objectStore('meta').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+function allProducts(){return new Promise((res,rej)=>{const r=db.transaction('products','readonly').objectStore('products').getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+function putProduct(p){return new Promise((res,rej)=>{const tx=db.transaction('products','readwrite');tx.objectStore('products').put(p);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+function delProduct(code){return new Promise((res,rej)=>{const tx=db.transaction('products','readwrite');tx.objectStore('products').delete(code);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+function addSaleRow(s){return new Promise((res,rej)=>{const r=db.transaction('sales','readwrite').objectStore('sales').add(s);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function allSales(){return new Promise((res,rej)=>{const r=db.transaction('sales','readonly').objectStore('sales').getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.remove('hidden');clearTimeout(window._t);window._t=setTimeout(()=>el.classList.add('hidden'),2500)}
+function toastUndo(msg, onUndo){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}
+  t.innerHTML=escapeHtml(msg)+' <button type="button" id="toast-undo-btn" style="margin-left:10px;background:#fff;color:#0f172a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer">Undo</button>';
+  t.classList.add('show');
+  const btn=document.getElementById('toast-undo-btn');
+  let done=false;
+  const run=async()=>{if(done)return;done=true;t.classList.remove('show');try{await onUndo()}catch(e){}};
+  if(btn)btn.onclick=run;
+  clearTimeout(window._toastTimer);
+  window._toastTimer=setTimeout(()=>{t.classList.remove('show');window._undoSale=null;window._undoProd=null},5000);
+}
+
+function show(id){['screen-license','screen-setup','screen-pin','screen-app'].forEach(s=>document.getElementById(s).classList.toggle('hidden',s!==id))}
+function todayKey(){const d=new Date();const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day}
+function monthKey(){return todayKey().slice(0,7)}
+function formatPayWhen(p){
+  if(p&&p.ts)return formatAppDate(new Date(p.ts))+' '+(new Date(p.ts)).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+  if(p&&p.dateKey)return displayDate(p.dateKey);
+  return '';
+}
+
+function parseMoneyInput(v){
+  if(v==null||v==='')return NaN;
+  return Number(String(v).replace(/,/g,'').replace(/\s/g,''));
+}
+function formatMoneyInput(el){
+  if(!el)return;
+  const n=parseMoneyInput(el.value);
+  if(isNaN(n))return;
+  el.value=n.toLocaleString(undefined,{maximumFractionDigits:2});
+}
+function money(n){n=Number(n||0);const o={minimumFractionDigits:0,maximumFractionDigits:2};if(Math.abs(n%1)>1e-9)o.minimumFractionDigits=2;return n.toLocaleString(undefined,o)}
+function escapeHtml(s){s=String(s==null?'':s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\x22/g,'&quot;').replace(/\x27/g,'&#39;')}
+function normCustomer(n){n=(n||'').trim();return(!n||/^walk[\s-]*in$/i.test(n))?'—':n}
+
+
+async function activateLicense(){const ownerId=document.getElementById('lic-id').value.trim().toUpperCase();const code=document.getElementById('lic-code').value.trim();const err=document.getElementById('lic-err');err.classList.add('hidden');if(!ownerId||!code){err.textContent='Enter Owner ID and code';err.classList.remove('hidden');return}let result=await verifyCode(ownerId,code);if(!result.ok){err.textContent=result.reason||'Activation failed';err.classList.remove('hidden');return}const licPayload={ownerId,code,expiry:result.expiry.toISOString(),expStr:result.expStr,activatedAt:new Date().toISOString()};await metaSet('license',licPayload);try{localStorage.setItem('ledger_license_backup',JSON.stringify(licPayload));localStorage.setItem('ledger_license_v1',JSON.stringify(licPayload))}catch(e){}sessionStorage.removeItem('ledger_readonly');sessionStorage.removeItem('ledger_unlocked');toast('License activated — enter your PIN');await route()}
+
+function assertWritable(){if(isReadOnly()){toast('License expired — view only. Renew to sell or edit.');return false}return true}
+async function nextReceiptNo(){
+  let n=Number(await metaGet('receiptSeq'))||0;
+  n+=1;
+  await metaSet('receiptSeq',n);
+  return String(n).padStart(4,'0');
+}
+function useEthDate(){try{return localStorage.getItem('ledger_eth_date')==='1'}catch(e){return false}}
+function toggleEthDate(forced){
+  let on;
+  if(typeof forced==='boolean') on=forced;
+  else on=!useEthDate();
+  try{localStorage.setItem('ledger_eth_date',on?'1':'0')}catch(e){}
+  const sw=document.getElementById('sw-eth');
+  if(sw)sw.checked=on;
+  const el=document.getElementById('eth-date-status');
+  if(el)el.textContent=on?'On':'Off';
+  toast(on?'Ethiopian dates on':'Ethiopian dates off');try{updateDueEthHint()}catch(e){};
+  try{renderHistory()}catch(e){}
+  try{renderOwedList()}catch(e){}
+  try{renderActStockHist()}catch(e){}
+  try{refreshHome()}catch(e){}
+  try{
+    const lic=window._lastLic||null;
+  }catch(e){}
+
+}
+function syncEthSwitch(){
+  const sw=document.getElementById('sw-eth');
+  if(sw)sw.checked=!!useEthDate();
+}
+
+
+/* Ethiopian calendar: 12 months of 30 days + Pagumen (5 days, or 6 in leap year).
+   Ethiopian leap year: year % 4 === 3. New Year (Meskerem 1) = 11 Sep (12 Sep in Gregorian leap years). */
+var ETH_MONTHS=['','መስከረም','ጥቅምት','ኅዳር','ታኅሣሥ','ጥር','የካቲት','መጋቢት','ሚያዝያ','ግንቦት','ሰኔ','ሐምሌ','ነሐሴ','ጳጉሜ'];
+function gregorianToJdn(y,m,d){
+  var a=Math.floor((14-m)/12);
+  var yy=y+4800-a;
+  var mm=m+12*a-3;
+  return d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045;
+}
+function isGregLeap(y){return (y%4===0&&y%100!==0)||(y%400===0)}
+function gregToEth(gy,gm,gd){
+  var nyDay=isGregLeap(gy)?12:11;
+  var today=gregorianToJdn(gy,gm,gd);
+  var thisNY=gregorianToJdn(gy,9,nyDay);
+  var ey, startNY;
+  if(today>=thisNY){
+    ey=gy-7;
+    startNY=thisNY;
+  }else{
+    ey=gy-8;
+    startNY=gregorianToJdn(gy-1,9,isGregLeap(gy-1)?12:11);
+  }
+  var ethDoy=today-startNY; // 0 = Meskerem 1
+  var month, day;
+  if(ethDoy<360){
+    month=Math.floor(ethDoy/30)+1;
+    day=(ethDoy%30)+1;
+  }else{
+    month=13;
+    day=ethDoy-360+1;
+    var maxP=(ey%4===3)?6:5;
+    if(day>maxP) day=maxP;
+  }
+  return{year:ey,month:month,day:day};
+}
+function formatEthDate(gy,gm,gd){
+  var e=gregToEth(gy,gm,gd);
+  var mn=ETH_MONTHS[e.month]||String(e.month);
+  return e.day+' '+mn+' '+e.year;
+}
+function formatEthFromKey(dateKey){
+  if(!dateKey||typeof dateKey!=='string')return dateKey||'';
+  var p=dateKey.split('-');
+  if(p.length<3)return dateKey;
+  var gy=+p[0],gm=+p[1],gd=+p[2];
+  if(!gy||!gm||!gd)return dateKey;
+  return formatEthDate(gy,gm,gd);
+}
+function formatAppDate(d){
+  var g=(d instanceof Date)?d:new Date(d);
+  if(isNaN(g.getTime()))return '';
+  if(useEthDate()){
+    try{return formatEthDate(g.getFullYear(),g.getMonth()+1,g.getDate())}catch(err){}
+  }
+  return g.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+}
+function displayDate(dateKeyOrTs){
+  if(dateKeyOrTs==null||dateKeyOrTs==='')return '—';
+  if(typeof dateKeyOrTs==='number')return formatAppDate(new Date(dateKeyOrTs));
+  var s=String(dateKeyOrTs);
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)){
+    if(useEthDate())return formatEthFromKey(s.slice(0,10));
+    var p=s.slice(0,10).split('-');
+    return formatAppDate(new Date(+p[0],+p[1]-1,+p[2]));
+  }
+  return formatAppDate(s);
+}
+
+function showLicenseBanner(){
+  let bar=document.getElementById('lic-banner');
+  if(!bar){
+    bar=document.createElement('div');
+    bar.id='lic-banner';
+    bar.style.cssText='display:none;padding:10px 14px;font-size:13px;font-weight:600;text-align:center;z-index:50';
+    const app=document.getElementById('screen-app');
+    if(app)app.insertBefore(bar,app.firstChild);
+  }
+  return bar;
+}
+async function updateLicenseBanner(){
+  const bar=showLicenseBanner();
+  if(!bar)return;
+  const lic=await metaGet('license');
+  if(!lic||!lic.expiry){bar.style.display='none';return}
+  const exp=new Date(lic.expiry).getTime();
+  const left=exp-Date.now();
+  const days=Math.ceil(left/86400000);
+  if(sessionStorage.getItem('ledger_readonly')==='1'||left<=0){
+    bar.style.display='block';
+    bar.style.background='#7f1d1d';
+    bar.style.color='#fff';
+    bar.textContent='License expired — view & export only. Enter a new code in License to renew.';
+    return;
+  }
+  if(days<=7){
+    bar.style.display='block';
+    bar.style.background='#fef3c7';
+    bar.style.color='#92400e';
+    bar.textContent='License expires in '+days+' day'+(days===1?'':'s')+' — renew soon';
+  }else{
+    bar.style.display='none';
+  }
+}
+
+async function route(){
+  let lic=null;
+  try{lic=await metaGet('license')}catch(e){}
+  if(!lic||!lic.ownerId){
+    try{
+      const b=localStorage.getItem('ledger_license_backup')||localStorage.getItem('ledger_license_v1');
+      if(b){lic=JSON.parse(b);if(lic&&lic.ownerId)await metaSet('license',lic)}
+    }catch(e){}
+  }
+  if(!lic||!lic.ownerId){show('screen-license');return}
+  // Already activated on this phone → PIN only
+  const exp=new Date(lic.expiry);
+  if(!isNaN(exp.getTime())&&trustedNow()>exp.getTime()) sessionStorage.setItem('ledger_readonly','1');
+  else sessionStorage.removeItem('ledger_readonly');
+  let business=null;
+  try{business=await metaGet('business')}catch(e){}
+  if(!business){
+    try{const bb=localStorage.getItem('ledger_business_backup');if(bb){business=JSON.parse(bb);await metaSet('business',business)}}catch(e){}
+  }
+  biz=business;
+  if(!biz){show('screen-setup');return}
+  if(sessionStorage.getItem('ledger_unlocked')==='1')await openMain();
+  else{
+    const pl=document.getElementById('pin-label');
+    if(pl)pl.textContent=biz.name||'';
+    show('screen-pin');
+  }
+}
+async function saveSetup(){const name=document.getElementById('su-name').value.trim();const bname=document.getElementById('su-biz').value.trim();const phone=document.getElementById('su-phone').value.trim();const type=document.getElementById('su-type').value;const currency=document.getElementById('su-currency').value.trim()||'ETB';const pin=document.getElementById('su-pin').value;if(!name||!bname){toast('Name and business required');return}if(!pin||pin.length<6){toast('PIN at least 6 digits');return}biz={name:bname,ownerName:name,phone,type,currency};await metaSet('business',biz);await setPin(pin);sessionStorage.setItem('ledger_unlocked','1');touchActive();await openMain()}
+async function checkPin(){
+  const err=document.getElementById('pin-err');
+  const lockUntil=Number(localStorage.getItem('ledger_pin_lock')||0);
+  if(Date.now()<lockUntil){
+    const sec=Math.ceil((lockUntil-Date.now())/1000);
+    err.textContent='Too many tries. Try again in '+sec+'s';
+    err.classList.remove('hidden');
+    return;
+  }
+  const pin=document.getElementById('pin-in').value;
+  const saved=await metaGet('pin');
+  if(await verifyPin(pin)){localStorage.removeItem('ledger_pin_rounds');
+    sessionStorage.setItem('ledger_unlocked','1');
+    localStorage.removeItem('ledger_pin_fails');
+    localStorage.removeItem('ledger_pin_lock');
+    err.classList.add('hidden');
+    await openMain();
+  }else{
+    let fails=Number(localStorage.getItem('ledger_pin_fails')||0)+1;
+    localStorage.setItem('ledger_pin_fails',String(fails));
+    const left=Math.max(0,5-fails);
+    if(fails>=5){
+      localStorage.setItem('ledger_pin_lock',String(Date.now()+lockMs()));
+      localStorage.setItem('ledger_pin_fails','0');
+      err.textContent='Too many tries. Locked for 60 seconds';
+    }else{
+      err.textContent='Wrong PIN · '+left+' tries left';
+    }
+    err.classList.remove('hidden');
+  }
+}
+function lockApp(){sessionStorage.removeItem('ledger_unlocked');document.getElementById('pin-in').value='';route()}
+async function goLicenseRenew(){
+  const lic=await metaGet('license');
+  show('screen-license');
+  if(lic&&lic.ownerId)document.getElementById('lic-id').value=lic.ownerId;
+  document.getElementById('lic-err').textContent='Enter a new activation code from Admin';
+  document.getElementById('lic-err').classList.remove('hidden');
+}
+
+async function openMain(){
+  biz=await metaGet('business');
+  const lic=await metaGet('license');
+  if(!lic||!lic.ownerId){showLicenseScreen(false);return}
+  const exp=new Date(lic.expiry);
+  if(!isNaN(exp.getTime())&&trustedNow()>exp.getTime()){
+    sessionStorage.removeItem('ledger_unlocked');
+    showLicenseScreen(true, lic);
+    return;
+  }
+  sessionStorage.removeItem('ledger_readonly');
+  document.getElementById('app-hi').textContent='Hi, '+(biz.ownerName||'Owner')+' 👋';
+  document.getElementById('app-biz').textContent=biz.name+' · '+(cfg().label||biz.type);
+  const days=Math.ceil((exp.getTime()-Date.now())/86400000);
+  document.getElementById('app-lic').textContent='License until '+formatAppDate(exp)+' · '+days+' days left';
+  document.getElementById('app-lic').style.color='';
+  applyTypeLabels();show('screen-app');nav('home');
+}
+function applyTypeLabels(){const c=cfg();document.getElementById('lbl-code').textContent=c.codeLabel+' *';document.getElementById('lbl-qty').textContent=c.qtyLabel+' *';document.getElementById('lbl-cost').textContent=c.costLabel+' *';document.getElementById('st-qty-lbl').textContent=c.soldLbl;document.getElementById('fields-importer').classList.toggle('hidden',!c.usesCartons);document.getElementById('fields-simple').classList.toggle('hidden',!!c.usesCartons);document.getElementById('sk-units-lbl').textContent=c.usesCartons?'Total cartons':'Total qty'}
+function nav(v){['home','stock','sell','history','more'].forEach(x=>document.getElementById('view-'+x).classList.toggle('hidden',x!==v));document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));if(v==='home')refreshHome();if(v==='stock'){applyTypeLabels();renderStock();refreshStockStats()}if(v==='sell'){renderSellList();loadCustomerSuggestions().catch(function(){});}if(v==='history')renderHistory();if(v==='more')fillMore()}
+async function addProduct(){if(!assertWritable())return;const c=cfg();const code=document.getElementById('p-code').value.trim().toUpperCase().replace(/['"\\<>`]/g,'');let name=code;const cost=Number(document.getElementById('p-cost').value);if(!code){toast('Enter code');return}if(isNaN(cost)||cost<0){toast('Enter cost');return}let addQty=0,addCartons=0,ppc=1;if(c.usesCartons){addCartons=Number(document.getElementById('p-cartons').value)||0;ppc=Number(document.getElementById('p-ppc').value)||0;if(addCartons<=0||ppc<=0){toast('Enter cartons and pcs per carton');return}addQty=addCartons*ppc}else{addQty=Number(document.getElementById('p-qty').value)||0;if(addQty<=0){toast('Enter quantity');return}}const list=await allProducts();const existing=list.find(p=>p.code===code);if(existing){
+  const oldQty=Number(existing.qty)||0;const oldCost=Number(existing.cost)||0;
+  const newQty=oldQty+addQty;
+  // weighted average cost so old stock keeps fair profit
+  existing.cost=newQty>0?((oldQty*oldCost)+(addQty*cost))/newQty:cost;
+  existing.qty=newQty;existing.name=name;
+  if(c.usesCartons){existing.cartons=(Number(existing.cartons)||0)+addCartons;existing.pairsPerCarton=ppc}
+  const stockSave=putProduct(existing);renderStock();refreshStockStats();renderSellList();await stockSave;
+  if(oldQty>0&&Math.abs(oldCost-cost)>0.001)toast('Cost averaged: '+money(existing.cost)+' (old stock mixed)');
+}else{const row={code,name,qty:addQty,cost};if(c.usesCartons){row.cartons=addCartons;row.pairsPerCarton=ppc}const stockSave=putProduct(row);renderStock();refreshStockStats();renderSellList();await stockSave}const historySave=addStockHistory({code,cartons:c.usesCartons?addCartons:null,pcs:addQty,pcsPerCarton:c.usesCartons?ppc:null,cost,dateKey:todayKey(),ts:Date.now()});
+['p-code','p-qty','p-cartons','p-ppc','p-cost'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});toast('Stock updated');try{renderActStockHist()}catch(e){}await historySave;}
+async function renderStock(){const c=cfg();const q=(document.getElementById('stock-search').value||'').trim().toLowerCase();let list=await allProducts();if(q)list=list.filter(p=>(p.code||'').toLowerCase().includes(q)||(p.name||'').toLowerCase().includes(q));const head=document.getElementById('stock-head');head.innerHTML=c.usesCartons?'<tr><th>Code</th><th>Total<br>ctn</th><th>Pcs/ctn</th><th>Total<br>pcs</th><th>Cost</th><th>Total<br>cost</th><th></th></tr>':'<tr><th>Code</th><th>Total<br>pcs</th><th>Cost</th><th>Total<br>cost</th><th></th></tr>';const body=document.getElementById('stock-body');const empty=document.getElementById('stock-empty');if(!list.length){body.innerHTML='';empty.classList.remove('hidden');return}empty.classList.add('hidden');body.innerHTML=list.map(p=>{if(c.usesCartons)return`<tr><td>${escapeHtml(p.code)}${(Number(p.qty)||0)<=0?' <span style="color:#dc2626;font-size:12px">Out of stock</span>':''}</td><td>${p.cartons!=null?p.cartons:'—'}</td><td>${p.pairsPerCarton!=null?p.pairsPerCarton:'—'}</td><td>${p.qty}</td><td>${money(p.cost)}</td><td>${money((Number(p.qty)||0)*(Number(p.cost)||0))}</td><td><div class="menu-wrap"><button type="button" class="menu-dots" onclick="event.stopPropagation();toggleStockMenu('${jsq(p.code)}')">⋮</button><div class="menu-pop" id="stock-menu-${p.code}"><button type="button" class="btn-secondary" onclick="editProd('${jsq(p.code)}')">Edit</button><button type="button" class="btn-danger" onclick="removeProd('${jsq(p.code)}')">Delete</button></div></div></td></tr>`;return`<tr><td>${escapeHtml(p.code)}</td><td>${p.qty}</td><td>${money(p.cost)}</td><td>${money((Number(p.qty)||0)*(Number(p.cost)||0))}</td><td><div class="menu-wrap"><button type="button" class="menu-dots" onclick="event.stopPropagation();toggleStockMenu('${jsq(p.code)}')">⋮</button><div class="menu-pop" id="stock-menu-${p.code}"><button type="button" class="btn-secondary" onclick="editProd('${jsq(p.code)}')">Edit</button><button type="button" class="btn-danger" onclick="removeProd('${jsq(p.code)}')">Delete</button></div></div></td></tr>`}).join('')}
+async function refreshStockStats(){const list=await allProducts();const c=cfg();let units=0,value=0;list.forEach(p=>{if(c.usesCartons)units+=Number(p.cartons)||0;else units+=Number(p.qty)||0;value+=(Number(p.qty)||0)*(Number(p.cost)||0)});document.getElementById('sk-items').textContent=list.length;document.getElementById('sk-units').textContent=units;document.getElementById('sk-value').textContent=money(value)}
+async function editProd(code){
+  const list=await allProducts();
+  const p=list.find(x=>x.code===code);
+  if(!p)return;
+  const c=cfg();
+  document.getElementById('ep-old-code').value=p.code;
+  document.getElementById('ep-code').value=p.code;
+  document.getElementById('ep-cost').value=p.cost!=null?p.cost:'';
+  if(c.usesCartons){
+    document.getElementById('ep-carton-fields').style.display='';
+    document.getElementById('ep-qty-fields').style.display='none';
+    document.getElementById('ep-cartons').value=p.cartons!=null?p.cartons:0;
+    document.getElementById('ep-ppc').value=p.pairsPerCarton!=null?p.pairsPerCarton:1;
+  }else{
+    document.getElementById('ep-carton-fields').style.display='none';
+    document.getElementById('ep-qty-fields').style.display='';
+    document.getElementById('ep-qty').value=p.qty!=null?p.qty:0;
+  }
+  const modal=document.getElementById('edit-prod-modal');
+  modal.classList.remove('hidden');
+  modal.style.display='flex';
+}
+function closeEditProd(){
+  const modal=document.getElementById('edit-prod-modal');
+  modal.classList.add('hidden');
+  modal.style.display='none';
+}
+async function saveEditProd(){
+  if(!assertWritable())return;
+  const c=cfg();
+  const oldCode=document.getElementById('ep-old-code').value;
+  const newCode=(document.getElementById('ep-code').value||'').trim().toUpperCase();
+  if(!newCode){toast('Code required');return}
+  let newCartons=0,newPpc=1,newQty=0,newCost=0;
+  if(c.usesCartons){
+    newCartons=Number(document.getElementById('ep-cartons').value)||0;
+    newPpc=Number(document.getElementById('ep-ppc').value)||1;
+    newQty=newCartons*newPpc;
+  }else{
+    newQty=Number(document.getElementById('ep-qty').value)||0;
+  }
+  newCost=Number(document.getElementById('ep-cost').value)||0;
+  if(newQty<0)newQty=0;
+  const list=await allProducts();
+  if(newCode!==oldCode&&list.some(x=>x.code===newCode)){toast('Code already exists');return}
+  const oldP=list.find(x=>x.code===oldCode)||{};const updated={code:newCode,name:newCode,qty:newQty,cost:newCost};
+  if(c.usesCartons){updated.cartons=newCartons;updated.pairsPerCarton=newPpc}
+  if(newCode!==oldCode)await delProduct(oldCode);
+  await putProduct(updated);{const dq=newQty-(Number(oldP.qty)||0);const uc=c.usesCartons;if(dq!==0||(Number(oldP.cost)||0)!==newCost||oldCode!==newCode||(uc&&((Number(oldP.cartons)||0)!==newCartons||(Number(oldP.pairsPerCarton)||0)!==newPpc)))await addStockHistory({code:newCode,cartons:null,pcs:dq,cost:newCost,dateKey:todayKey(),ts:Date.now(),edited:true,from:{code:oldCode,cartons:uc?(Number(oldP.cartons)||0):null,ppc:uc?(Number(oldP.pairsPerCarton)||0):null,qty:Number(oldP.qty)||0,cost:Number(oldP.cost)||0},to:{code:newCode,cartons:uc?newCartons:null,ppc:uc?newPpc:null,qty:newQty,cost:newCost}})}closeEditProd();
+  toast('Product updated');
+  renderStock();refreshStockStats();renderSellList();
+}
+async function removeProd(code){
+  if(!assertWritable())return;
+  if(!confirm('Delete '+code+' from stock?'))return;
+  const list=await allProducts();
+  const snap=list.find(x=>x.code===code);
+  await delProduct(code);
+  window._undoProd=snap?JSON.parse(JSON.stringify(snap)):null;
+  toastUndo('Product deleted', async()=>{
+    if(window._undoProd){await putProduct(window._undoProd);window._undoProd=null;toast('Product restored');renderStock();refreshStockStats();renderSellList()}
+  });
+  renderStock();refreshStockStats();renderSellList();
+}
+async function renderSellList(){const q=((document.getElementById('sell-search')||{}).value||'').trim().toLowerCase();const list=(await allProducts()).filter(p=>(Number(p.qty)||0)>0&&(!q||String(p.code).toLowerCase().includes(q)));const box=document.getElementById('sell-list');const empty=document.getElementById('sell-empty');if(!list.length&&q){box.innerHTML='<p class="empty">No product matches</p>';empty.classList.add('hidden');renderCart();return}if(!list.length){box.innerHTML='';empty.classList.remove('hidden');renderCart();return}empty.classList.add('hidden');const c=cfg();box.innerHTML=list.map(p=>{let stockLine=p.qty+' '+c.unit;if(c.usesCartons&&p.cartons!=null)stockLine=p.cartons+' ctn · '+p.qty+' pcs';return`<div class="prod-pick" onclick="addToCart('${jsq(p.code)}')"><b>${escapeHtml(p.code)}</b><br><span class="sub" style="margin:0">In stock: ${stockLine}</span></div>`}).join('');renderCart()}
+async function addToCart(code){const list=await allProducts();const p=list.find(x=>x.code===code);if(!p)return;const existing=cart.find(x=>x.code===code);const c=cfg();if(existing){toast('Already in order — change carton/qty below');return}const item={code:p.code,name:p.name||p.code,qty:1,price:'',cost:Number(p.cost)||0,max:Number(p.qty)||0,pairsPerCarton:p.pairsPerCarton||null,cartons:''};if(c.usesCartons&&p.pairsPerCarton){item.cartons='1';item.qty=Number(p.pairsPerCarton)||1;item.pairsPerCarton=Number(p.pairsPerCarton)}cart.push(item);renderCart()}
+function renderCart(){document.getElementById('cart-count').textContent=cart.length;const box=document.getElementById('cart-box');if(!cart.length){box.innerHTML='<p class="empty">Tap products above</p>';document.getElementById('cart-total').textContent='0';return}const c=cfg();let total=0;box.innerHTML=cart.map((item,i)=>{const line=(item.price===''||isNaN(Number(item.price)))?0:(Number(item.qty)||0)*Number(item.price);total+=line;if(c.usesCartons){const ppc=item.pairsPerCarton||'';return`<div class="cart-line" data-cart-i="${i}"><div style="width:100%;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center"><b>${escapeHtml(item.code)}</b><button type="button" class="btn-danger btn-sm" onclick="removeCart(${i})">×</button></div><div class="cart-field"><label>Cartons</label><input type="text" inputmode="numeric" data-f="cartons" value="${item.cartons!==undefined&&item.cartons!==null?item.cartons:''}" oninput="setCartCartons(${i},this.value)"/></div><div class="cart-field"><label>Pcs / ctn</label><input type="text" inputmode="numeric" value="${ppc}" readonly style="background:#f0ebe4"/></div><div class="cart-field"><label>T(qty)</label><input type="text" inputmode="numeric" data-f="qty" value="${item.qty}" oninput="setCartQty(${i},this.value)"/></div><div class="cart-field"><label>Price / pcs</label><input type="text" inputmode="decimal" data-f="price" value="${item.price}" oninput="setCartPrice(${i},this.value)"/></div><div class="cart-field" style="flex:0.8;text-align:right"><label>Line</label><div style="font-weight:700;padding:10px 0" data-cart-line="${i}">${money(line)}</div></div></div>`}return`<div class="cart-line" data-cart-i="${i}"><div style="width:100%;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center"><b>${escapeHtml(item.code)}</b><button type="button" class="btn-danger btn-sm" onclick="removeCart(${i})">×</button></div><div class="cart-field"><label>Qty</label><input type="text" inputmode="numeric" data-f="qty" value="${item.qty}" oninput="setCartQty(${i},this.value)"/></div><div class="cart-field"><label>Price / pcs</label><input type="text" inputmode="decimal" data-f="price" value="${item.price}" oninput="setCartPrice(${i},this.value)"/></div><div class="cart-field" style="flex:0.8;text-align:right"><label>Line</label><div style="font-weight:700;padding:10px 0" data-cart-line="${i}">${money(line)}</div></div></div>`}).join('');document.getElementById('cart-total').textContent=money(total)}
+  try{updateBalanceHint()}catch(e){}
+function setCartCartons(i,v){
+  const item=cart[i];
+  if(!item)return;
+  const ppc=Number(item.pairsPerCarton)||0;
+  let ctns=Number(String(v).replace(/,/g,''))||0;
+  if(ctns<0)ctns=0;
+  let qty=ppc?ctns*ppc:ctns;
+  const max=Number(item.max)||0;
+  if(qty>max){
+    qty=max;
+    ctns=ppc?Math.floor(max/ppc):max;
+    toast('Only '+max+' pcs in stock');
+  }
+  item.cartons=String(ctns);
+  item.qty=qty;
+  const row=document.querySelector('[data-cart-i="'+i+'"]');
+  if(row){
+    const qIn=row.querySelector('[data-f="qty"]');
+    const cIn=row.querySelector('[data-f="cartons"]');
+    if(qIn)qIn.value=item.qty;
+    if(cIn)cIn.value=item.cartons;
+  }
+  updateCartTotals();
+}
+
+function setCartQty(i,v){
+  const item=cart[i];
+  if(!item)return;
+  let n=Number(String(v).replace(/,/g,''))||0;
+  if(n<0)n=0;
+  const max=Number(item.max)||0;
+  if(n>max){n=max;toast('Only '+max+' in stock');}
+  item.qty=n;
+  const ppc=Number(item.pairsPerCarton)||0;
+  if(ppc) item.cartons=String(Math.floor(n/ppc));
+  const row=document.querySelector('[data-cart-i="'+i+'"]');
+  if(row){
+    const ctnIn=row.querySelector('[data-f="cartons"]');
+    if(ctnIn&&document.activeElement!==ctnIn) ctnIn.value=item.cartons;
+    const qtyIn=row.querySelector('[data-f="qty"]');
+    if(qtyIn&&document.activeElement!==qtyIn) qtyIn.value=item.qty;
+  }
+  updateCartTotals();
+}
+function setCartPrice(i,v){
+  cart[i].price=v;
+  updateCartTotals();
+}
+function updateCartTotals(){
+  let total=0;
+  cart.forEach((item,i)=>{
+    const line=(item.price===''||isNaN(Number(item.price)))?0:(Number(item.qty)||0)*Number(item.price);
+    total+=line;
+    const el=document.querySelector('[data-cart-line="'+i+'"]');
+    if(el) el.textContent=money(line);
+  });
+  document.getElementById('cart-total').textContent=money(total);
+}
+function removeCart(i){cart.splice(i,1);renderCart()}
+function clearCart(){cart=[];renderCart();document.getElementById('s-customer').value=''}
+
+
+async function openOwedScreen(from){
+  const moreEl=document.getElementById('view-more');
+  if(from) window._owedFrom=from;
+  else if(moreEl && !moreEl.classList.contains('hidden')) window._owedFrom='more';
+  else window._owedFrom='home';
+  const owed=document.getElementById('view-owed');
+  owed.classList.remove('hidden');
+  owed.style.display='flex';
+  const scrollBox=owed.querySelector('[style*="overflow-y"]');
+  if(scrollBox)scrollBox.scrollTop=0;
+  await renderOwedList();
+}
+function closeOwedScreen(){
+  const owed=document.getElementById('view-owed');
+  owed.classList.add('hidden');
+  owed.style.display='none';
+  const from=window._owedFrom||'home';
+  if(from==='more'){
+    // stay on more — ensure more view visible
+    document.querySelectorAll('#screen-app .screen').forEach(s=>s.classList.add('hidden'));
+    const more=document.getElementById('view-more');
+    if(more)more.classList.remove('hidden');
+    document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('on',b.dataset.v==='more'));
+  }else{
+    document.querySelectorAll('#screen-app .screen').forEach(s=>s.classList.add('hidden'));
+    document.getElementById('view-home').classList.remove('hidden');
+    document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('on',b.dataset.v==='home'));
+    refreshHome();
+  }
+}
+
+
+async function renderOwedList(){
+  const orders=(await allOrders()).filter(o=>(Number(o.balance)||0)>0.001);
+  const groups={};
+  orders.forEach(o=>{
+    const key=((o.customer||'—').trim().toLowerCase())||'—';
+    if(!groups[key])groups[key]={key:key,name:o.customer||'—',phone:o.phone||'',orders:[],total:0,paid:0,balance:0};
+    groups[key].orders.push(o);
+    groups[key].total+=Number(o.total)||0;
+    groups[key].paid+=Number(o.paid)||0;
+    groups[key].balance+=Number(o.balance)||0;
+    if(o.phone&&!groups[key].phone)groups[key].phone=o.phone;
+  });
+  const list=Object.values(groups).sort((a,b)=>b.balance-a.balance);
+  let grand=0;list.forEach(g=>grand+=g.balance);
+  document.getElementById('owed-total').textContent=money(grand);
+  const box=document.getElementById('owed-list');
+  const empty=document.getElementById('owed-empty');
+  if(!list.length){box.innerHTML='';empty.classList.remove('hidden');return}
+  empty.classList.add('hidden');
+  box.innerHTML=list.map((g,gi)=>{
+    const salesHtml=g.orders.sort((a,b)=>(a.ts||0)-(b.ts||0)).map(o=>{
+      const when=displayDate(o.dateKey||o.ts);
+      return '<div class="sale-line">'
+        +'<div style="font-weight:700">Sale '+escapeHtml(when)+' · Receipt #'+escapeHtml(String(o.receiptNo||'—'))+'</div>'
+        +overdueTag(o)+'<div class="sub">Total: '+money(o.total)+' · Paid: '+money(o.paid)+' · Still to pay: <b>'+money(o.balance)+'</b></div>'
+        +'</div>';
+    }).join('');
+    const keyEsc=escapeHtml(g.key).replace(/'/g,"\\'");
+    return '<div class="cust-folder" id="cf-'+gi+'">'
+      +'<div class="cust-folder-head" onclick="this.parentElement.classList.toggle(\'open\')">'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-weight:800;font-size:16px">'+escapeHtml(g.name)+'</div>'
+      +(g.phone?'<div class="sub">'+escapeHtml(g.phone)+'</div>':'')
+      +'<div class="sub" style="margin-top:4px">All sales: '+money(g.total)+' · Paid: '+money(g.paid)+'</div>'
+      +'<div class="pay-beside">'
+      +'<div style="font-size:17px;font-weight:800;color:var(--coral,#c45c4a)">Still to pay: '+money(g.balance)+'</div>'
+      +'<button type="button" class="btn-primary btn-sm" style="margin:0;white-space:nowrap" onclick="event.stopPropagation();openPayForCustomer(\''+keyEsc+'\')">Receive payment</button>'
+      +'</div>'
+      +'</div><div style="font-size:18px;color:#999;margin-left:8px">▾</div>'
+      +'</div>'
+      +'<div class="cust-folder-body">'
+      +'<p class="sub" style="margin:8px 0">Sales history (oldest first — payments clear the oldest credit first)</p>'
+      +salesHtml
+      +'</div></div>';
+  }).join('');
+}
+
+
+let _payOrderId=null;
+let _payCustomerKey=null;
+
+async function openPayModal(orderId){
+  if(isReadOnly()){toast('License expired — view only');return}
+  _payOrderId=orderId;
+  _payCustomerKey=null;
+  const o=await getOrder(Number(orderId)||orderId);
+  if(!o){toast('Order not found');return}
+  document.getElementById('pay-order-info').textContent=(o.customer||'')+' · balance '+money(o.balance)+(o.phone?' · '+o.phone:'');
+  document.getElementById('pay-amount').value='';
+  const pays=await paymentsForOrder(o.id);
+  pays.sort((a,b)=>(b.ts||0)-(a.ts||0));
+  document.getElementById('pay-history').innerHTML=pays.length?pays.map(p=>'<div style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="font-weight:700">+'+money(p.amount)+'</div><div class="sub">'+escapeHtml(formatPayWhen(p))+(p.note?' · '+escapeHtml(p.note):'')+'</div></div>').join(''):'<div class="sub">No payments yet</div>';
+  const m=document.getElementById('pay-modal');
+  m.classList.remove('hidden');m.style.display='flex';
+}
+
+async function openPayForCustomer(customerKey){
+  if(isReadOnly()){toast('License expired — view only');return}
+  _payOrderId=null;
+  _payCustomerKey=customerKey;
+  const allCustOrders=(await allOrders()).filter(o=>{
+    const k=((o.customer||'—').trim().toLowerCase())||'—';
+    return k===customerKey;
+  });
+  const openOrders=allCustOrders.filter(o=>(Number(o.balance)||0)>0.001);
+  if(!openOrders.length){toast('No balance');return}
+  let bal=0;openOrders.forEach(o=>bal+=Number(o.balance)||0);
+  let totalPaid=0;allCustOrders.forEach(o=>totalPaid+=Number(o.paid)||0);
+  const name=openOrders[0].customer||customerKey;
+  const phone=openOrders[0].phone||'';
+  document.getElementById('pay-order-info').textContent=name+(phone?' · '+phone:'')+' · Still to pay: '+money(bal)+' · Total paid so far: '+money(totalPaid);
+  document.getElementById('pay-amount').value='';
+  // Every payment ever for this customer (all orders, not only open)
+  let allPays=[];
+  for(const o of allCustOrders){
+    const pays=await paymentsForOrder(o.id);
+    allPays=allPays.concat(pays.map(p=>Object.assign({},p,{_receipt:o.receiptNo})));
+  }
+  allPays.sort((a,b)=>(b.ts||0)-(a.ts||0));
+  let histHtml='';
+  if(!allPays.length){
+    histHtml='<div class="sub">No payments yet</div>';
+  }else{
+    let sum=0;allPays.forEach(p=>sum+=Number(p.amount)||0);
+    histHtml='<div class="sub" style="margin-bottom:8px;font-weight:700">All payments: '+money(sum)+' · '+allPays.length+' record(s)</div>';
+    histHtml+=allPays.map(p=>{
+      return '<div style="padding:8px 0;border-bottom:1px solid var(--line)">'
+        +'<div style="font-weight:700">+'+money(p.amount)+'</div>'
+        +'<div class="sub">'+escapeHtml(formatPayWhen(p))
+        +(p.note?' · '+escapeHtml(p.note):'')
+        +(p._receipt?' · Receipt #'+escapeHtml(String(p._receipt)):'')
+        +'</div></div>';
+    }).join('');
+  }
+  document.getElementById('pay-history').innerHTML=histHtml;
+  const m=document.getElementById('pay-modal');
+  m.classList.remove('hidden');m.style.display='flex';
+  // focus amount field
+  setTimeout(function(){try{document.getElementById('pay-amount').focus()}catch(e){}},200);
+}
+function closePayModal(){
+  const m=document.getElementById('pay-modal');
+  m.classList.add('hidden');m.style.display='none';
+  _payOrderId=null;
+  _payCustomerKey=null;
+}
+
+async function submitPayment(){
+  if(!_payOrderId && !_payCustomerKey)return;
+  if(!assertWritable())return;
+  let amount=parseMoneyInput(document.getElementById('pay-amount').value);
+  if(!amount||amount<=0){toast('Enter amount');return}
+  const now=Date.now();
+  const dk=todayKey();
+  let remaining=amount;
+  let applied=0;
+
+  // FIFO: oldest unpaid orders first
+  let targets=[];
+  if(_payCustomerKey){
+    targets=(await allOrders()).filter(o=>{
+      const k=((o.customer||'—').trim().toLowerCase())||'—';
+      return k===_payCustomerKey && (Number(o.balance)||0)>0.001;
+    }).sort((a,b)=>(a.ts||0)-(b.ts||0));
+  }else{
+    const o=await getOrder(Number(_payOrderId)||_payOrderId);
+    if(o) targets=[o];
+  }
+  if(!targets.length){toast('Nothing to pay');return}
+   {const owed=targets.reduce((s,o)=>s+(Number(o.balance)||0),0);if(amount>owed+0.001){toast('Customer owes only '+money(owed)+'. You cannot enter more.');return}}
+
+  for(const o of targets){
+    if(remaining<=0)break;
+    const bal=Number(o.balance)||0;
+    if(bal<=0)continue;
+    const pay=Math.min(remaining, bal);
+    o.paid=(Number(o.paid)||0)+pay;
+    o.balance=Math.max(0, Math.round((bal-pay)*100)/100);
+    o.lastPaymentAt=now;
+    o.lastPaymentDate=dk;
+    o.lastPaymentAmount=pay;
+    await putOrder(o);
+    await addPayment({orderId:o.id,amount:pay,dateKey:dk,ts:now,note:'Payment received'});
+    remaining=Math.round((remaining-pay)*100)/100;
+    applied+=pay;
+  }
+
+  toast('Paid '+money(applied)+' on '+dk+(remaining>0?' · (extra not applied)':''));
+  document.getElementById('pay-amount').value='';
+  closePayModal();
+  await renderOwedList();
+  refreshHome();
+}
+
+
+
+
+async function loadCustomerSuggestions(){
+  const map={};
+  try{
+    const orders=await allOrders();
+    (orders||[]).forEach(o=>{
+      const n=(o.customer||'').trim();
+      if(!n||n==='—'||n==='-')return;
+      const key=n.toLowerCase();
+      if(!map[key])map[key]={name:n,phone:o.phone||''};
+      else if(o.phone&&!map[key].phone)map[key].phone=o.phone;
+    });
+  }catch(e){}
+  try{
+    const sales=await allSales();
+    (sales||[]).forEach(s=>{
+      const n=(s.customer||'').trim();
+      if(!n||n==='—'||n==='-')return;
+      const key=n.toLowerCase();
+      if(!map[key])map[key]={name:n,phone:s.phone||''};
+      else if(s.phone&&!map[key].phone)map[key].phone=s.phone;
+    });
+  }catch(e){}
+  window._custMap=map;
+  window._custList=Object.values(map).sort((a,b)=>a.name.localeCompare(b.name));
+}
+function hideCustomerDropdown(){
+  const dd=document.getElementById('customer-dropdown');
+  if(dd){dd.classList.add('hidden');dd.innerHTML=''}
+}
+function pickCustomer(name,phone){
+  window._pickingCust=true;
+  const inp=document.getElementById('s-customer');
+  if(inp)inp.value=name;
+  const phoneEl=document.getElementById('s-phone');
+  if(phoneEl)phoneEl.value=phone||'';
+  hideCustomerDropdown();
+  onCustomerInput(true);
+  setTimeout(function(){window._pickingCust=false},300);
+}
+
+function onCustomerInput(fromPick){
+  const name=(document.getElementById('s-customer').value||'').trim();
+  const box=document.getElementById('known-customer-fields');
+  const paidBox=document.getElementById('paid-now-fields');
+  const dd=document.getElementById('customer-dropdown');
+  if(name){
+    if(box)box.classList.remove('hidden');
+    if(paidBox){paidBox.classList.remove('hidden');try{if(!document.getElementById('s-days').value)selectDuePill(14);else updateBalanceHint()}catch(e){updateBalanceHint()}}
+    const map=window._custMap||{};
+    const hit=map[name.toLowerCase()];
+    const phoneEl=document.getElementById('s-phone');
+    if(hit&&hit.phone&&phoneEl&&(!phoneEl.value||fromPick))phoneEl.value=hit.phone;
+    if(dd&&!fromPick){
+      const q=name.toLowerCase();
+      const list=(window._custList||[]).filter(c=>c.name.toLowerCase().includes(q)).slice(0,12);
+      if(list.length){
+        dd.classList.remove('hidden');
+        dd.innerHTML='';
+        list.forEach(function(c){
+          const btn=document.createElement('button');
+          btn.type='button';
+          btn.style.cssText='display:block;width:100%;text-align:left;padding:12px 14px;border:none;border-bottom:1px solid var(--line,#e2e8f0);background:transparent;font-size:15px;cursor:pointer';
+          btn.innerHTML='<strong>'+escapeHtml(c.name)+'</strong>'+(c.phone?'<div class="sub">'+escapeHtml(c.phone)+'</div>':'');
+          btn.onmousedown=function(e){e.preventDefault();pickCustomer(c.name,c.phone||'')};
+          btn.ontouchstart=function(e){e.preventDefault();pickCustomer(c.name,c.phone||'')};
+          dd.appendChild(btn);
+        });
+      }else{
+        hideCustomerDropdown();
+      }
+    }
+    try{updateBalanceHint()}catch(e){}
+  }else{
+    if(box)box.classList.add('hidden');
+    if(paidBox)paidBox.classList.add('hidden');
+    hideCustomerDropdown();
+    const phoneEl=document.getElementById('s-phone');
+    const paidEl=document.getElementById('s-paid');
+    if(phoneEl)phoneEl.value='';
+    if(paidEl)paidEl.value='';
+  }
+}
+
+function updateBalanceHint(){
+  const hint=document.getElementById('s-balance-hint');
+  if(!hint)return;
+  let total=0;
+  try{total=cartTotalNum()}catch(e){
+    cart.forEach(function(item){
+      if(item.price!==''&&item.price!=null&&!isNaN(Number(item.price)))
+        total+=(Number(item.qty)||0)*Number(item.price);
+    });
+  }
+  const paidEl=document.getElementById('s-paid');
+  const paidRaw=paidEl?paidEl.value:'';
+  let paid;
+  if(paidRaw===''||paidRaw==null){
+    paid=total;
+    hint.textContent='Leave empty = fully paid. Or type how much was paid now.';
+  }else{
+    paid=parseMoneyInput(paidRaw);
+    if(isNaN(paid)||paid<0){
+      hint.textContent='Enter a valid amount paid';
+      try{updateCreditDueVisibility()}catch(e){}
+      return;
+    }
+    if(paid>total+0.001){
+      hint.textContent='Cannot pay more than total ('+money(total)+')';
+      try{updateCreditDueVisibility()}catch(e){}
+      return;
+    }
+    const credit=Math.max(0,Math.round((total-paid)*100)/100);
+    if(credit<=0.001)hint.textContent='Fully paid — no credit';
+    else hint.textContent='Credit (balance): '+money(credit)+'  ·  Paid now: '+money(paid);
+  }
+  try{updateCreditDueVisibility()}catch(e){}
+}
+
+function cartTotalNum(){
+  let total=0;
+  (window.cart||cart||[]).forEach(item=>{
+    if(item.price!==''&&item.price!=null&&!isNaN(Number(item.price)))
+      total+=(Number(item.qty)||0)*Number(item.price);
+  });
+  return total;
+}
+
+async function completeSale(){
+  if(window._saleBusy)return;
+  if(isReadOnly()){toast('License expired — renew in More → License to sell again');return}
+  if(!cart.length){toast('Add at least one product');return}
+  const c=cfg();
+  for(const item of cart){
+    if(item.price===''||item.price==null||isNaN(Number(item.price))||Number(item.price)<0){toast('Enter price for every item');return}
+    if(!item.qty||Number(item.qty)<=0){toast('Enter quantity for every item');return}
+  }
+  const products=await allProducts();
+  for(const item of cart){
+    const p=products.find(x=>x.code===item.code);
+    const have=p?(Number(p.qty)||0):0;
+    if(!p||Number(item.qty)>have){toast('Only '+have+' left for '+item.code);return}
+  }
+  const total=cartTotalNum();
+  const customerRaw=(document.getElementById('s-customer')||{}).value||'';
+  const customer=normCustomer(customerRaw);
+  const isWalkIn=(customer==='—'||customer==='-'||!customerRaw.trim());
+  let paid,balance,phone='';
+  if(isWalkIn){
+    paid=total;balance=0;phone='';
+  }else{
+    phone=((document.getElementById('s-phone')||{}).value||'').trim();
+    const paidRaw=(document.getElementById('s-paid')||{}).value;
+    paid=(paidRaw===''||paidRaw==null)?total:parseMoneyInput(paidRaw);
+    if(isNaN(paid)||paid<0){toast('Enter a valid amount paid');return}
+    if(paid>total)paid=total;
+    balance=Math.max(0,Math.round((total-paid)*100)/100);
+  }
+  const below=[];
+  for(const item of cart){
+    const p=products.find(x=>x.code===item.code);
+    const cost=Number(p&&p.cost)||0;
+    if(Number(item.price)<cost)below.push(item.code+' ('+money(item.price)+' < cost '+money(cost)+')');
+  }
+  if(below.length){
+    if(!confirm('Sale price is below cost:\n'+below.join('\n')+'\n\nContinue anyway?'))return;
+  }
+  const btn=document.querySelector('[onclick="completeSale()"]');
+  window._saleBusy=true;
+  if(btn){btn.disabled=true;btn.textContent='Saving…'}
+  try{
+    const tk=todayKey(),mk=monthKey();
+    const receiptLines=[];let receiptTotal=0;
+    let receiptNo=await nextReceiptNo();
+    for(const item of cart){
+      const p=products.find(x=>x.code===item.code);
+      const price=Number(item.price);const qty=Number(item.qty);
+      const revenue=qty*price;const profit=revenue-qty*(Number(p.cost)||0);
+      const remaining=(Number(p.qty)||0)-qty;
+      let cartonsSold=null;
+      if(c.usesCartons){
+        if(item.cartons!==''&&item.cartons!=null)cartonsSold=Number(item.cartons);
+        else if(p.pairsPerCarton)cartonsSold=qty/p.pairsPerCarton;
+      }
+      p.qty=Math.max(0,remaining);
+      if(c.usesCartons&&p.pairsPerCarton)p.cartons=p.qty>0?Math.floor(p.qty/p.pairsPerCarton):0;
+      await putProduct(p);
+      await addSaleRow({code:item.code,name:item.name,qty,price,revenue,profit,customer,phone,cartons:cartonsSold,pairsPerCarton:p.pairsPerCarton||null,dateKey:tk,monthKey:mk,ts:Date.now(),receiptNo});
+      receiptLines.push({code:item.code,qty,price,revenue,cartons:cartonsSold,pairsPerCarton:p.pairsPerCarton||item.pairsPerCarton||null});
+      receiptTotal+=revenue;
+    }
+    if(!isWalkIn&&balance>0){
+      const orderId=await addOrder({
+        receiptNo,customer,phone,total,paid,balance,dueDate:dueFromForm(),
+        dateKey:tk,monthKey:mk,ts:Date.now(),
+        lines:receiptLines.map(l=>({code:l.code,qty:l.qty,price:l.price,revenue:l.revenue}))
+      });
+      if(paid>0)await addPayment({orderId,amount:paid,dateKey:tk,ts:Date.now(),note:'At sale'});
+    }
+    toast(balance>0?('Sale saved · balance '+money(balance)):(isWalkIn?'Sale completed':'Sale for '+customer+' completed'));
+    clearCart();
+    const paidInp=document.getElementById('s-paid');if(paidInp)paidInp.value='';
+    const phoneInp=document.getElementById('s-phone');if(phoneInp)phoneInp.value='';
+    const custInp=document.getElementById('s-customer');if(custInp)custInp.value='';
+    onCustomerInput();
+    loadCustomerSuggestions();
+    renderSellList();refreshHome();
+    showReceipt({customerName:customer,lines:receiptLines,totalRevenue:receiptTotal,receiptNo,paid:isWalkIn?total:paid,balance:isWalkIn?0:balance,phone});
+  }finally{
+    window._saleBusy=false;
+    if(btn){btn.disabled=false;btn.textContent='Complete sale'}
+  }
+}
+
+async function refreshHome(){
+  const sales=await allSales();
+  const tk=todayKey(),mk=monthKey();
+  const c=cfg();
+  let qty=0,rev=0,profit=0,monthP=0;
+  sales.forEach(s=>{
+    if(s.dateKey===tk){
+      if(c.usesCartons&&s.cartons!=null)qty+=Number(s.cartons)||0;
+      else qty+=Number(s.qty)||0;
+      rev+=Number(s.revenue)||0;
+      profit+=Number(s.profit)||0;
+    }
+    if(s.monthKey===mk)monthP+=Number(s.profit)||0;
+  });
+  let creditToday=0;
+  try{
+    const orders=await allOrders();
+    orders.forEach(o=>{
+      if(o.dateKey===tk) creditToday+=Number(o.balance)||0;
+    });
+  }catch(e){}
+  const paidToday=Math.max(0,Math.round((rev-creditToday)*100)/100);
+  document.getElementById('st-qty').textContent=c.usesCartons?Math.round(qty*100)/100:qty;
+  document.getElementById('st-sales').textContent=money(rev);
+  const sp=document.getElementById('st-paid');if(sp)sp.textContent=money(paidToday);
+  const sc=document.getElementById('st-credit');if(sc)sc.textContent=money(creditToday);
+  document.getElementById('st-profit').textContent=money(profit);
+  document.getElementById('st-month').textContent=money(monthP);
+  try{
+    const orders=await allOrders();
+    let totalOwed=0;
+    orders.forEach(o=>{if((Number(o.balance)||0)>0.001)totalOwed+=Number(o.balance)||0});
+    const ow=document.getElementById('st-owed');if(ow)ow.textContent=money(totalOwed);
+  }catch(e){}
+  try{await updateCreditAlerts()}catch(e){}
+}
+async function renderHistory(){
+  const q=(document.getElementById('hist-search').value||'').trim().toLowerCase();
+  let sales=(await allSales()).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(q)sales=sales.filter(s=>(s.code||'').toLowerCase().includes(q)||(s.customer||'').toLowerCase().includes(q)||(displayDate(s.dateKey||s.ts)).includes(q));
+  window._histSales=sales;
+  const body=document.getElementById('hist-body');
+  const empty=document.getElementById('hist-empty');
+  if(!sales.length){body.innerHTML='';empty.classList.remove('hidden');return}
+  empty.classList.add('hidden');
+  body.innerHTML=sales.map((s,i)=>{
+    let ctn='—';
+    if(s.cartons!=null&&s.cartons!=='') ctn=s.cartons;
+    else if(s.pairsPerCarton&&s.qty) ctn=Math.round((Number(s.qty)/Number(s.pairsPerCarton))*100)/100;
+    return `<tr>
+    <td>${displayDate(s.dateKey||s.ts)}</td>
+    <td>${escapeHtml(s.customer||'—')}</td>
+    <td>${escapeHtml(s.code)}</td>
+    <td>${ctn}</td>
+    <td>${s.qty}</td>
+    <td>${money(s.price)}</td>
+    <td>${money(s.revenue)}</td>
+    <td>${money(s.profit)}</td>
+    <td>
+      <div class="menu-wrap">
+        <button type="button" class="menu-dots" onclick="event.stopPropagation();toggleHistMenu(${i})">⋮</button>
+        <div class="menu-pop" id="hist-menu-${i}">
+          <button type="button" class="btn-secondary" onclick="editSale(${i})">Edit</button>
+          <button type="button" class="btn-danger" onclick="deleteSale(${i})">Delete</button>
+        </div>
+      </div>
+    </td>
+  </tr>`}).join('');
+}
+function toggleStockMenu(code){
+  document.querySelectorAll('.menu-pop').forEach(el=>{
+    if(el.id!=='stock-menu-'+code) el.classList.remove('open');
+  });
+  const m=document.getElementById('stock-menu-'+code);
+  if(m) m.classList.toggle('open');
+}
+function toggleHistMenu(i){
+  document.querySelectorAll('.menu-pop').forEach(el=>{
+    if(el.id!=='hist-menu-'+i) el.classList.remove('open');
+  });
+  const m=document.getElementById('hist-menu-'+i);
+  if(m) m.classList.toggle('open');
+}
+document.addEventListener('click',()=>{document.querySelectorAll('.menu-pop').forEach(el=>el.classList.remove('open'))});
+
+let _editSaleId=null;
+let _editSaleIndex=null;
+
+async function editSale(i){
+  if(!assertWritable())return;
+  const s=(window._histSales||[])[i];
+  if(!s||s.id==null){toast('Cannot edit');return}
+  _editSaleId=s.id;
+  _editSaleIndex=i;
+  document.getElementById('es-code').value=s.code||'';
+  document.getElementById('es-qty').value=String(s.qty!=null?s.qty:'');
+  document.getElementById('es-price').value=String(s.price!=null?s.price:'');
+  document.getElementById('es-customer').value=(s.customer&&s.customer!=='—'&&s.customer!=='-')?s.customer:'';
+  const m=document.getElementById('edit-sale-modal');
+  m.classList.remove('hidden');m.style.display='flex';
+}
+function closeEditSale(){
+  const m=document.getElementById('edit-sale-modal');
+  if(m){m.classList.add('hidden');m.style.display='none'}
+  _editSaleId=null;_editSaleIndex=null;
+}
+async function saveEditSale(){
+  if(!assertWritable())return;
+  if(_editSaleId==null)return;
+  const s=(window._histSales||[]).find(x=>x.id===_editSaleId)||(window._histSales||[])[_editSaleIndex];
+  if(!s){toast('Sale not found');return}
+  const code=(document.getElementById('es-code').value||'').trim().toUpperCase();
+  const qty=parseMoneyInput(document.getElementById('es-qty').value)||Number(document.getElementById('es-qty').value)||0;
+  const price=parseMoneyInput(document.getElementById('es-price').value);
+  const customer=normCustomer(document.getElementById('es-customer').value||'');
+  if(!code||qty<=0||isNaN(price)||price<0){toast('Fill code, quantity and price');return}
+
+  const products=await allProducts();
+  const oldQty=Number(s.qty)||0;
+  const oldCode=s.code;
+
+  // return old stock
+  let pOld=products.find(x=>x.code===oldCode);
+  if(pOld){
+    pOld.qty=(Number(pOld.qty)||0)+oldQty;
+    await putProduct(pOld);
+  }else if(oldCode){
+    await putProduct({code:oldCode,name:oldCode,qty:oldQty,cost:Number(s.cost)||0});
+  }
+
+  const products2=await allProducts();
+  let p=products2.find(x=>x.code===code);
+  if(!p){
+    // undo
+    if(pOld){pOld.qty=Math.max(0,(Number(pOld.qty)||0)-oldQty);await putProduct(pOld)}
+    toast('Product code not in stock');return;
+  }
+  const have=Number(p.qty)||0;
+  if(qty>have){
+    if(pOld||oldCode===code){
+      const undo=products2.find(x=>x.code===oldCode);
+      if(undo){undo.qty=Math.max(0,(Number(undo.qty)||0)-oldQty);await putProduct(undo)}
+    }
+    toast('Only '+have+' in stock for '+code);return;
+  }
+  p.qty=have-qty;
+  await putProduct(p);
+
+  const cost=Number(p.cost)||Number(s.cost)||0;
+  const revenue=qty*price;
+  const profit=revenue-(qty*cost);
+  s.code=code;
+  s.qty=qty;if(Number(s.pairsPerCarton)>0)s.cartons=Math.round(qty/Number(s.pairsPerCarton)*100)/100;s.price=price;
+  s.cost=cost;
+  s.revenue=revenue;
+  s.profit=profit;
+  s.customer=customer||'—';
+  await putSale(s);await syncAllOrders();closeEditSale();
+  toast('Sale updated');
+  renderHistory();
+  refreshHome();
+  try{renderSellList()}catch(e){}
+}
+async function deleteSale(i){
+  if(!assertWritable())return;
+  const s=(window._histSales||[])[i];
+  if(!s||s.id==null){toast('Cannot delete');return}
+  if(!confirm('Delete this sale and restore stock?'))return;
+  const products=await allProducts();
+  let p=products.find(x=>x.code===s.code);
+  const add=Number(s.qty)||0;
+  if(p){
+    p.qty=(Number(p.qty)||0)+add;
+    if(cfg().usesCartons&&p.pairsPerCarton)p.cartons=Math.floor(p.qty/p.pairsPerCarton);
+    await putProduct(p);
+  }
+  // do not recreate deleted products with cost 0
+  const snap={sale:s,productBefore:p?JSON.parse(JSON.stringify(p)):null};
+  await deleteSaleById(s.id);
+  try{await syncAllOrders()}catch(e){}
+  window._undoSale=snap;
+  toastUndo('Sale deleted · stock restored', async()=>{
+    if(!window._undoSale)return;
+    const u=window._undoSale;window._undoSale=null;
+    await addSaleRow(u.sale);
+    if(u.productBefore){
+      const list=await allProducts();
+      let cur=list.find(x=>x.code===u.sale.code);
+      if(cur){cur.qty=Math.max(0,(Number(cur.qty)||0)-(Number(u.sale.qty)||0));
+        if(cfg().usesCartons&&cur.pairsPerCarton)cur.cartons=Math.floor(cur.qty/cur.pairsPerCarton);
+        await putProduct(cur);
+      }
+    }
+    try{await syncAllOrders()}catch(e){}
+    toast('Sale restored');
+    renderHistory();refreshHome();renderSellList();renderStock();
+  });
+  renderHistory();refreshHome();renderSellList();renderStock();
+}
+function updateSaleById(id,data){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction('sales','readwrite');
+    const store=tx.objectStore('sales');
+    const g=store.get(id);
+    g.onsuccess=()=>{
+      const row=g.result;
+      if(!row){rej(new Error('missing'));return}
+      Object.assign(row,data);
+      store.put(row);
+    };
+    tx.oncomplete=()=>res();
+    tx.onerror=()=>rej(tx.error);
+  });
+}
+function deleteSaleById(id){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction('sales','readwrite');
+    tx.objectStore('sales').delete(id);
+    tx.oncomplete=()=>res();
+    tx.onerror=()=>rej(tx.error);
+  });
+}
+function toggleActivityMenu(){
+  const sub=document.getElementById('activity-submenu');
+  const caret=document.getElementById('act-caret');
+  if(!sub)return;
+  const open=sub.style.display==='flex';
+  sub.style.display=open?'none':'flex';
+  sub.classList.toggle('hidden', open);
+  if(caret) caret.textContent = open ? '›' : '▾';
+}
+
+function openMore(section){
+  document.getElementById('more-menu').classList.add('hidden');
+  document.getElementById('more-sub').classList.remove('hidden');
+  ['business','employees','license','report','subscription','pin','act-low','act-best','act-stock'].forEach(s=>{
+    const el=document.getElementById('ms-'+s);
+    if(el) el.classList.toggle('hidden', s!==section);
+  });
+  if(section==='business') fillBusinessForm();
+  if(section==='employees') empStart();
+  if(section!=='employees') empStop();
+  if(section==='license') fillLicense();
+  if(section==='act-low') renderActLow();
+  if(section==='act-best') renderActBest();
+  if(section==='act-stock') renderActStockHist();
+  if(section==='report') showReport('day');
+  if(section==='subscription') fillSubscription();
+}
+function closeMoreSub(){
+  try{empStop()}catch(e){}
+  document.getElementById('more-sub').classList.add('hidden');
+  document.getElementById('more-menu').classList.remove('hidden');
+}
+async function fillMore(){try{updateBackupHint()}catch(e){}try{applyDarkFromStore();syncEthSwitch()}catch(e){}
+  closeMoreSub();
+}
+async function fillBusinessForm(){
+  document.getElementById('mb-name').value=biz.name||'';
+  document.getElementById('mb-owner').value=biz.ownerName||'';
+  document.getElementById('mb-phone').value=biz.phone||'';
+  document.getElementById('mb-type').value=biz.type||'shoe';
+  document.getElementById('mb-currency').value=biz.currency||'ETB';
+}
+async function saveBusiness(){
+  const name=document.getElementById('mb-name').value.trim();
+  const owner=document.getElementById('mb-owner').value.trim();
+  if(!name||!owner){toast('Name required');return}
+  biz.name=name;biz.ownerName=owner;
+  biz.phone=document.getElementById('mb-phone').value.trim();
+  biz.type=document.getElementById('mb-type').value;
+  biz.currency=document.getElementById('mb-currency').value.trim()||'ETB';
+  await metaSet('business',biz);
+  applyTypeLabels();
+  document.getElementById('app-hi').textContent='Hi, '+biz.ownerName+' 👋';
+  document.getElementById('app-biz').textContent=biz.name+' · '+(cfg().label||biz.type);
+  toast('Business saved');
+}
+async function fillLicense(){
+  const lic=await metaGet('license');
+  const exp=new Date(lic.expiry);
+  document.getElementById('more-lic').textContent='Owner ID: '+lic.ownerId+' · Until '+formatAppDate(exp);
+  document.getElementById('renew-id').value=lic.ownerId||'';
+}
+async function fillSubscription(){
+  const lic=await metaGet('license');
+  const exp=new Date(lic.expiry);
+  const days=Math.ceil((exp-Date.now())/86400000);
+  let status='Active';
+  if(days<0) status='Expired';
+  else if(days<=7) status='Expiring soon';
+  document.getElementById('sub-status').textContent='Status: '+status+' · ID '+lic.ownerId;
+  document.getElementById('sub-days').textContent=days<0?0:days;
+  document.getElementById('sub-until').textContent=formatAppDate(exp);
+}
+async function renderActLow(){
+  const products=await allProducts();
+  const c=cfg();
+  let low=[];
+  if(c.usesCartons){
+    low=products.filter(p=>{
+      const ctn=Number(p.cartons);
+      if(!isNaN(ctn)&&ctn>0) return ctn<3;
+      const ppc=Number(p.pairsPerCarton)||1;
+      const approx=Math.floor((Number(p.qty)||0)/ppc);
+      return (Number(p.qty)||0)>0 && approx<3;
+    });
+  }else{
+    low=products.filter(p=>(Number(p.qty)||0)>0&&(Number(p.qty)||0)<3);
+  }
+  if(!low.length){
+    document.getElementById('act-low').innerHTML='All products have healthy stock.';
+    return;
+  }
+  document.getElementById('act-low').innerHTML=low.map(p=>{
+    if(c.usesCartons){
+      const ctn=p.cartons!=null?p.cartons:Math.floor((Number(p.qty)||0)/(Number(p.pairsPerCarton)||1));
+      return '<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>'+escapeHtml(p.code)+'</b> · '+ctn+' carton(s) · '+p.qty+' pcs left</div>';
+    }
+    return '<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>'+escapeHtml(p.code)+'</b> · '+p.qty+' left</div>';
+  }).join('');
+}
+async function renderActBest(){
+  const sales=await allSales();
+  const c=cfg();
+  const map={};
+  sales.forEach(s=>{
+    const code=s.code||'—';
+    if(!map[code]) map[code]={pcs:0,cartons:0,profit:0,revenue:0,lines:0,pcsPerCarton:null};
+    map[code].pcs += Number(s.qty)||0;
+    map[code].profit += Number(s.profit)||0;
+    map[code].revenue += Number(s.revenue)||0;
+    map[code].lines += 1;
+    if(s.pairsPerCarton) map[code].pcsPerCarton = Number(s.pairsPerCarton);
+    if(s.cartons!=null&&s.cartons!=='') map[code].cartons += Number(s.cartons)||0;
+    else if(c.usesCartons&&s.pairsPerCarton) map[code].cartons += (Number(s.qty)||0)/(Number(s.pairsPerCarton)||1);
+  });
+  const best=Object.keys(map).sort((a,b)=>map[b].pcs-map[a].pcs).slice(0,20);
+  if(!best.length){
+    document.getElementById('act-best').innerHTML='No sales yet.';
+    return;
+  }
+  document.getElementById('act-best').innerHTML=best.map((code,idx)=>{
+    const m=map[code];
+    const ctn=Math.round(m.cartons*100)/100;
+    let extra='';
+    if(c.usesCartons){
+      const ppc=m.pcsPerCarton?m.pcsPerCarton:'—';
+      extra='<div style="font-size:12px;color:var(--muted);margin-top:4px">Cartons sold: <b>'+ctn+'</b> · Pcs/carton: <b>'+ppc+'</b> · Pcs sold: <b>'+m.pcs+'</b></div>';
+    }else{
+      extra='<div style="font-size:12px;color:var(--muted);margin-top:4px">Pcs sold: <b>'+m.pcs+'</b></div>';
+    }
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--line)">'
+      +'<div style="display:flex;justify-content:space-between;gap:8px">'
+      +'<b>#'+(idx+1)+' · '+escapeHtml(code)+'</b>'
+      +'<span style="color:var(--good);font-weight:700">'+money(m.profit)+' birr profit</span>'
+      +'</div>'
+      +extra
+      +'<div style="font-size:12px;color:var(--muted);margin-top:2px">Sales: '+money(m.revenue)+' birr · '+m.lines+' order line(s)</div>'
+      +'</div>';
+  }).join('');
+}
+async function showReport(mode){
+  ['d','m','y'].forEach(x=>{
+    const btn=document.getElementById('rep-'+x);
+    if(btn) btn.style.background = (mode==='day'&&x==='d')||(mode==='month'&&x==='m')||(mode==='year'&&x==='y') ? 'var(--leather)' : '';
+    if(btn) btn.style.color = (mode==='day'&&x==='d')||(mode==='month'&&x==='m')||(mode==='year'&&x==='y') ? '#fff' : '';
+  });
+  const sales=await allSales();
+  const now=new Date();
+  const y=now.getFullYear(), m=now.getMonth(), d=now.getDate();
+  let rev=0,profit=0,qty=0,count=0,label='';
+  sales.forEach(s=>{
+    const dt=new Date(s.ts||s.dateKey);
+    let ok=false;
+    if(mode==='day'){ok=s.dateKey===todayKey();label='Today'}
+    else if(mode==='month'){ok=(s.monthKey===monthKey())||(dt.getFullYear()===y&&dt.getMonth()===m);label=now.toLocaleString(undefined,{month:'long',year:'numeric'})}
+    else{ok=dt.getFullYear()===y||(displayDate(s.dateKey||s.ts)).startsWith(String(y));label=String(y)}
+    if(ok){rev+=Number(s.revenue)||0;profit+=Number(s.profit)||0;qty+=Number(s.qty)||0;count++}
+  });
+  document.getElementById('rep-sales').textContent=money(rev);
+  document.getElementById('rep-profit').textContent=money(profit);
+  document.getElementById('rep-qty').textContent=qty;
+  document.getElementById('rep-count').textContent=count;
+  document.getElementById('rep-label').textContent='Showing: '+label;
+}
+async function changePin(){
+  const oldp=document.getElementById('pin-old').value;
+  const n1=document.getElementById('pin-new').value;
+  const n2=document.getElementById('pin-new2').value;
+  const saved=await metaGet('pin');
+  if(!(await verifyPin(oldp))){toast('Current PIN wrong');return}
+  if(!n1||n1.length<6){toast('New PIN min 6 digits');return}
+  if(n1!==n2){toast('New PINs do not match');return}
+  await setPin(n1);
+  document.getElementById('pin-old').value='';
+  document.getElementById('pin-new').value='';
+  document.getElementById('pin-new2').value='';
+  toast('PIN changed');
+}
+async function renewLicense(){const ownerId=document.getElementById('renew-id').value.trim().toUpperCase();const code=document.getElementById('renew-code').value.trim();let result=await verifyCode(ownerId,code);if(!result.ok){toast(result.reason||'Invalid code');return}const licPayload={ownerId,code,expiry:result.expiry.toISOString(),expStr:result.expStr,activatedAt:new Date().toISOString()};await metaSet('license',licPayload);try{localStorage.setItem('ledger_license_backup',JSON.stringify(licPayload));localStorage.setItem('ledger_license_v1',JSON.stringify(licPayload))}catch(e){}toast('License renewed');document.getElementById('renew-code').value='';openMain()}
+
+
+async function exportBackup(){
+  try{
+    const products=await allProducts();
+    const sales=await allSales();
+    let orders=[],payments=[];
+    try{orders=await allOrders()}catch(e){}
+    try{
+      payments=await allPaymentsDec();
+    }catch(e){}
+    const license=await metaGet('license');
+    const data={
+      app:'agaze-offline',
+      exportedAt:new Date().toISOString(),
+      business:biz,
+      license:{ownerId:license&&license.ownerId,expiry:license&&license.expiry},
+      products,sales,orders,payments,stockHistory:await allStockHistory(),receiptSeq:await metaGet('receiptSeq')
+    };
+    let text='AGAZE BACKUP\n';
+    text+='Exported: '+new Date().toLocaleString()+'\n';
+    text+='Business: '+(biz&&biz.name?biz.name:'')+'\n';
+    text+='================================\n\n';
+    text+='PRODUCTS ('+products.length+')\n';
+    products.forEach(p=>{
+      text+='- '+p.code+' | qty '+p.qty+' | cost '+p.cost+(p.cartons!=null?' | cartons '+p.cartons:'')+'\n';
+    });
+    text+='\nSALES ('+sales.length+')\n';
+    sales.slice().sort((a,b)=>(b.ts||0)-(a.ts||0)).forEach(s=>{
+      text+='- '+(displayDate(s.dateKey||s.ts))+' | '+s.code+' x'+s.qty+' @'+s.price+' | '+(s.customer||'-')+' | rev '+s.revenue+'\n';
+    });
+    text+='\nCREDIT ('+orders.length+')\n';
+    orders.forEach(o=>{
+      text+='- '+(o.customer||'')+' | total '+o.total+' | paid '+o.paid+' | balance '+o.balance+'\n';
+    });
+    text+='\nPAYMENTS ('+payments.length+')\n';
+    payments.slice().sort((a,b)=>(b.ts||0)-(a.ts||0)).forEach(p=>{
+      text+='- '+(p.dateKey||'')+' | +'+p.amount+'\n';
+    });
+    text+='\n================================\nJSON for restore:\n\n';
+    text+=JSON.stringify(data,null,2);
+    text=JSON.stringify(data);text=await _maybeEncBackup(text);window._backupText=text;
+    // Show on screen (works on phone)
+    const bv=document.getElementById('backup-view');
+    const bt=document.getElementById('backup-text');
+    if(bv&&bt){
+      bt.textContent='Backup ready: '+products.length+' products, '+sales.length+' sales, '+orders.length+' credit sales. Tap Share and send the file to Telegram Saved Messages or Drive.';
+      bv.classList.remove('hidden');
+      bv.style.display='flex';
+    }
+    // Also try download
+    try{
+      const blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download='ledger-backup-'+todayKey()+'.txt';
+      a.click();
+    }catch(e){}
+    const when=new Date().toISOString();
+    try{localStorage.setItem('ledger_last_backup',when);await metaSet('lastBackup',when)}catch(e){}
+    try{updateBackupHint()}catch(e){}
+    toast('Backup ready — scroll to read or Share');
+  }catch(e){
+    toast('Backup failed');
+  }
+}
+function closeBackupView(){
+  const bv=document.getElementById('backup-view');
+  if(bv){bv.classList.add('hidden');bv.style.display='none'}
+}
+async function copyBackupText(){
+  const t=window._backupText||(document.getElementById('backup-text')||{}).textContent||'';
+  try{
+    if(navigator.clipboard)await navigator.clipboard.writeText(t);
+    toast('Copied');
+  }catch(e){toast('Copy failed — select text manually')}
+}
+function pickBackupFile(){
+  const inp=document.getElementById('backup-file-input');
+  if(inp)inp.click();
+}
+function updateBackupHint(){
+  const el=document.getElementById('backup-hint');
+  if(!el)return;
+  el.style.color='#6b7280';
+  el.style.fontWeight='500';
+  let when=null;
+  try{when=localStorage.getItem('ledger_last_backup')}catch(e){}
+  if(!when){try{when=localStorage.getItem('ledger_last_restore')}catch(e){}}
+  if(!when){el.textContent='No backup yet — export regularly';return}
+  const days=Math.floor((Date.now()-new Date(when).getTime())/86400000);
+  if(days<=0)el.textContent='Last backup: today';
+  else if(days===1)el.textContent='Last backup: 1 day ago';
+  else el.textContent='Last backup: '+days+' days ago';
+}
+function toggleDarkMode(forced){
+  if(typeof forced==='boolean'){
+    document.body.classList.toggle('dark', forced);
+  }else{
+    document.body.classList.toggle('dark');
+  }
+  const on=document.body.classList.contains('dark');
+  try{localStorage.setItem('ledger_dark',on?'1':'0')}catch(e){}
+  const sw=document.getElementById('sw-dark');
+  if(sw)sw.checked=on;
+  toast(on?'Dark mode on':'Dark mode off');
+}
+function applyDarkFromStore(){
+  try{
+    const on=localStorage.getItem('ledger_dark')==='1';
+    if(on)document.body.classList.add('dark');
+    const sw=document.getElementById('sw-dark');
+    if(sw)sw.checked=on;
+  }catch(e){}
+}
+async function shareReceipt(){
+  const paper=document.getElementById('receipt-paper');
+  if(!paper)return;
+  try{
+    if(navigator.share){
+      const text=paper.innerText||'';
+      await navigator.share({title:(biz&&biz.name)||'Receipt',text:text});
+    }else{
+      // fallback: copy text
+      const text=paper.innerText||'';
+      if(navigator.clipboard)await navigator.clipboard.writeText(text);
+      toast('Receipt text copied — paste in Telegram/WhatsApp');
+    }
+  }catch(e){
+    if(e&&e.name==='AbortError')return;
+    toast('Share cancelled');
+  }
+}
+
+function showReceipt(data){
+  const paper=document.getElementById('receipt-paper');
+  const overlay=document.getElementById('receipt-overlay');
+  if(!paper||!overlay)return;
+  const bizName=(biz&&biz.name)?biz.name:'Business';
+  const now=new Date();
+  let dateStr=formatAppDate(now)+' '+now.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+  const customer=normCustomer(data.customerName);
+  const rno=data.receiptNo?('Receipt #'+data.receiptNo):'';
+  const payLine=(data.paid!=null||data.balance!=null)?(
+    '<div class="meta">Paid now : '+money(data.paid!=null?data.paid:data.totalRevenue)+'</div>'+
+    (Number(data.balance)>0?('<div class="meta" style="font-weight:700">Still to pay : '+money(data.balance)+'</div>'):'<div class="meta">Still to pay : 0 (fully paid)</div>')
+  ):'';
+  let itemsHtml='';
+  (data.lines||[]).forEach(line=>{
+    const lineTotal=Number(line.revenue)!=null?Number(line.revenue):(Number(line.qty)||0)*(Number(line.price)||0);
+    let qtyPart='';
+    if(line.cartons!=null&&line.cartons!==''){
+      const c=line.cartons;
+      const ppc=line.pairsPerCarton!=null?line.pairsPerCarton:'';
+      qtyPart=c+' carton'+(Number(c)!==1?'s':'')+(ppc?' ('+ppc+' pcs)':'')+' × '+money(line.price);
+    }else{
+      qtyPart=line.qty+' pcs × '+money(line.price);
+    }
+    itemsHtml+='<div class="item"><div class="item-code">'+escapeHtml(line.code)+'</div><div class="item-row"><span>'+escapeHtml(qtyPart)+'</span><span>'+money(lineTotal)+'</span></div></div>';
+  });
+  paper.innerHTML='<div class="biz">'+escapeHtml(bizName)+'</div>'+(rno?'<div class="meta">'+escapeHtml(rno)+'</div>':'')+'<div class="meta">Date : '+escapeHtml(dateStr)+'</div><div class="line"></div><div class="meta">Customer : '+escapeHtml(customer)+'</div><div class="line"></div>'+itemsHtml+'<div class="line"></div><div class="totals"><div class="row grand"><span>Grand Total</span><span>'+cur()+' '+money(data.totalRevenue)+'</span></div><div class="row"><span>Paid</span><span>'+cur()+' '+money(data.paid!=null?data.paid:data.totalRevenue)+'</span></div><div class="row"><span>Credit</span><span>'+cur()+' '+money(Number(data.balance)||0)+'</span></div></div><div class="line"></div><div class="thanks">Thank you for choosing us!</div>';
+  overlay.classList.remove('hidden');
+}
+function closeReceipt(){
+  const overlay=document.getElementById('receipt-overlay');
+  if(overlay)overlay.classList.add('hidden');
+}
+
+/* Auto-lock after 5 minutes in background */
+const LOCK_MS=5*60*1000;
+let lastActive=Date.now();
+function touchActive(){lastActive=Date.now();sessionStorage.setItem('ledger_last_active',String(lastActive))}
+['click','touchstart','keydown','mousemove'].forEach(ev=>document.addEventListener(ev,touchActive,{passive:true}));
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){
+    sessionStorage.setItem('ledger_hidden_at',String(Date.now()));
+  }else{
+    const hiddenAt=Number(sessionStorage.getItem('ledger_hidden_at')||0);
+    if(hiddenAt&&Date.now()-hiddenAt>=LOCK_MS){
+      if(sessionStorage.getItem('ledger_unlocked')==='1'){
+        lockApp();
+        toast('Locked after 5 minutes away');
+      }
+    }
+    touchActive();
+  }
+});
+setInterval(()=>{
+  if(sessionStorage.getItem('ledger_unlocked')!=='1')return;
+  if(document.hidden)return;
+  const last=Number(sessionStorage.getItem('ledger_last_active')||lastActive);
+  if(Date.now()-last>=LOCK_MS){
+    lockApp();
+    toast('Locked after 5 minutes idle');
+  }
+},30000);
+
+
+
+function jsq(s){return escapeHtml(String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"))}
+function _store(n,mode,fn){return new Promise((res,rej)=>{const tx=db.transaction(n,mode);const r=fn(tx.objectStore(n));tx.oncomplete=()=>res(r&&r.result);tx.onerror=()=>rej(tx.error)})}
+function _all(n){return _store(n,'readonly',s=>s.getAll())}
+/* PIN: salted PBKDF2 hash, persistent lockout, recovery code */
+async function pinHash(p,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(p),'PBKDF2',false,['deriveBits']);const b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:150000,hash:'SHA-256'},k,256);return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('')}
+function rndHex(n){const a=new Uint8Array(n);crypto.getRandomValues(a);return Array.from(a,x=>x.toString(16).padStart(2,'0')).join('')}
+function lockMs(){const r=Number(localStorage.getItem('ledger_pin_rounds')||0);localStorage.setItem('ledger_pin_rounds',String(r+1));return 60000*Math.min(60,Math.pow(2,r))}
+const _om=openMain;openMain=async function(){await _om.apply(this,arguments);ensureRecovery()};
+/* credit: keep orders in sync with sales, due dates, overdue */
+async function syncAllOrders(){try{const [orders,sales]=await Promise.all([allOrders(),allSales()]);const by={};sales.forEach(s=>{if(s.receiptNo!=null)by[s.receiptNo]=(by[s.receiptNo]||0)+(Number(s.revenue)||0)});for(const o of orders){if(o.receiptNo==null)continue;const t=Math.round((by[o.receiptNo]||0)*100)/100;const b=Math.max(0,Math.round((t-(Number(o.paid)||0))*100)/100);if(Math.abs(t-(Number(o.total)||0))>0.001||Math.abs(b-(Number(o.balance)||0))>0.001){o.total=t;o.balance=b;await putOrder(o)}}}catch(e){}}
+
+
+
+function selectDuePill(val){
+  document.querySelectorAll('.due-pill').forEach(function(b){b.classList.remove('on')});
+  const customWrap=document.getElementById('custom-due-wrap');
+  const daysEl=document.getElementById('s-days');
+  if(val==='custom'){
+    const pill=document.getElementById('due-pill-custom');
+    if(pill)pill.classList.add('on');
+    if(customWrap)customWrap.classList.remove('hidden');
+    const dateEl=document.getElementById('s-due-date');
+    if(dateEl&&!dateEl.value){
+      const d=new Date();d.setDate(d.getDate()+14);
+      dateEl.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    }
+    updateDueEthHint();
+  }else{
+    const pill=document.getElementById('due-pill-'+val);
+    if(pill)pill.classList.add('on');
+    if(customWrap)customWrap.classList.add('hidden');
+    if(daysEl)daysEl.value=String(val);
+    syncDueFromDays();
+    updateDueEthHint();
+  }
+  updateBalanceHint();
+}
+function setDuePreset(days){selectDuePill(days)}
+function syncDueFromDays(){
+  const daysEl=document.getElementById('s-days');
+  const dateEl=document.getElementById('s-due-date');
+  if(!daysEl||!dateEl)return;
+  let n=parseInt(daysEl.value,10);if(!(n>=0))n=14;
+  try{localStorage.setItem('ledger_credit_days',String(n))}catch(e){}
+  const d=new Date();d.setDate(d.getDate()+n);
+  dateEl.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function dueFromForm(){
+  const customWrap=document.getElementById('custom-due-wrap');
+  const dateEl=document.getElementById('s-due-date');
+  if(customWrap&&!customWrap.classList.contains('hidden')&&dateEl&&dateEl.value&&/^\d{4}-\d{2}-\d{2}$/.test(dateEl.value)){
+    return dateEl.value;
+  }
+  if(dateEl&&dateEl.value&&/^\d{4}-\d{2}-\d{2}$/.test(dateEl.value)){
+    const daysEl=document.getElementById('s-days');
+    // if a pill set the hidden date via sync, use it
+    if(daysEl&&daysEl.value!=='')return dateEl.value;
+  }
+  let n=parseInt((document.getElementById('s-days')||{}).value,10);
+  if(!(n>=0))n=Number(localStorage.getItem('ledger_credit_days'))||14;
+  const d=new Date();d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function updateDueEthHint(){
+  const hint=document.getElementById('s-due-eth-hint');
+  const dateEl=document.getElementById('s-due-date');
+  const lbl=document.getElementById('lbl-due-date');
+  if(!hint||!dateEl)return;
+  if(!dateEl.value){hint.textContent='';return}
+  if(useEthDate()){
+    if(lbl)lbl.textContent='Pay-by date (Ethiopian)';
+    hint.textContent='Ethiopian: '+displayDate(dateEl.value)+'  ·  (device calendar is Gregorian; we show Ethiopian here)';
+  }else{
+    if(lbl)lbl.textContent='Pay-by date';
+    hint.textContent='Gregorian: '+displayDate(dateEl.value);
+  }
+}
+function updateCreditDueVisibility(){
+  const wrap=document.getElementById('credit-due-wrap');
+  if(!wrap)return;
+  let total=0;try{total=cartTotalNum()}catch(e){}
+  const paidEl=document.getElementById('s-paid');
+  const paidRaw=paidEl?paidEl.value:'';
+  const paid=(paidRaw===''||paidRaw==null)?total:parseMoneyInput(paidRaw);
+  const hasCredit=!isNaN(paid)&&paid<total-0.001;
+  wrap.classList.toggle('hidden',!hasCredit);
+  if(hasCredit){
+    const daysEl=document.getElementById('s-days');
+    if(daysEl&&!daysEl.value)daysEl.value='14';
+    try{syncDueFromDays()}catch(e){}
+    updateDueEthHint();
+  }
+}
+
+
+function overdueTag(o){
+  const d=o.dueDate;if(!d||(Number(o.balance)||0)<=0.001)return '';
+  const st=creditDueStatus(d);
+  if(st.kind==='overdue')return '<div style="color:#c0392b;font-weight:800">⚠ OVERDUE · pay-by was '+escapeHtml(displayDate(d))+' ('+st.days+' day'+(st.days!==1?'s':'')+' late)</div>';
+  if(st.kind==='today')return '<div style="color:#c0392b;font-weight:800">⚠ DUE TODAY · '+escapeHtml(displayDate(d))+'</div>';
+  if(st.kind==='soon')return '<div style="color:#9a3412;font-weight:700">📅 Due in '+st.days+' day'+(st.days!==1?'s':'')+' · '+escapeHtml(displayDate(d))+'</div>';
+  return '<div class="sub">Pay-by: '+escapeHtml(displayDate(d))+'</div>';
+}
+const _ro=renderOwedList;renderOwedList=async function(){await syncAllOrders();return _ro.apply(this,arguments)};
+const _rh=refreshHome;refreshHome=async function(){await syncAllOrders();await _rh.apply(this,arguments);try{const t=todayKey(),od=new Set();(await allOrders()).forEach(o=>{if((Number(o.balance)||0)>0.001&&o.dueDate&&o.dueDate<t)od.add((o.customer||'').toLowerCase())});const el=document.getElementById('st-owed');if(el){if(od.size){el.textContent+=' · '+od.size+' overdue';el.style.color='#c0392b'}else el.style.color=''}}catch(e){}};
+function lastPrice(c){try{const m=JSON.parse(localStorage.getItem('ledger_prices')||'{}');return m[c]!=null?String(m[c]):''}catch(e){return ''}}
+function rememberPrice(c,p){try{const m=JSON.parse(localStorage.getItem('ledger_prices')||'{}');m[c]=p;localStorage.setItem('ledger_prices',JSON.stringify(m))}catch(e){}}
+/* backup: share as a file; restore everything (with rollback) */
+async function shareBackupText(){const t=window._backupText||'';if(!t){toast('Create a backup first');return}try{const f=new File([t],'backup-'+todayKey()+'.json',{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Ledger backup'});else if(navigator.share)await navigator.share({title:'Ledger backup',text:t});else await copyBackupText()}catch(e){if(!(e&&e.name==='AbortError'))toast('Share failed — try Copy')}}
+const _STORES=['products','sales','orders','payments','stockHistory'];
+async function _replaceAll(m){for(const n of _STORES)await _store(n,'readwrite',s=>s.clear());for(const n of _STORES){const rows0=m[n]||[];if(!rows0.length)continue;const rows=[];for(const r of rows0)rows.push(await _e(n,r));await new Promise((res,rej)=>{const tx=db.transaction(n,'readwrite'),st=tx.objectStore(n);rows.forEach(r=>{if(r&&typeof r==='object')st.put(r)});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}}
+async function importBackupFromFile(file){if(!file)return;let d;try{const t=await file.text();try{d=JSON.parse(t);if(d&&d.enc===1)d=JSON.parse(await _decBackup(d))}catch(e){const i=t.indexOf('JSON for restore:');d=JSON.parse(i>=0?t.slice(i+17):t.slice(t.indexOf('{')))}}catch(e){toast('Invalid backup file');return}
+const m={products:(d.products||[]).filter(p=>p&&p.code),sales:d.sales||[],orders:d.orders||[],payments:d.payments||[],stockHistory:d.stockHistory||[]};
+if(!Array.isArray(d.products)||!Array.isArray(d.sales)||(!m.products.length&&!m.sales.length)){toast('No products or sales in file');return}
+if(!confirm('WARNING: RESTORE ERASES everything now on this phone and replaces it with the backup: '+m.products.length+' products, '+m.sales.length+' sales, '+m.orders.length+' credit sales. Continue?'))return;
+const snap={};for(const n of _STORES)snap[n]=await _all(n);
+try{await _replaceAll(m);if(d.receiptSeq!=null)await metaSet('receiptSeq',Number(d.receiptSeq)||0);if(d.business&&!biz){await metaSet('business',d.business);biz=d.business}try{localStorage.setItem('ledger_last_restore',new Date().toISOString())}catch(e){}await syncAllOrders();updateBackupHint();toast('Restore complete');renderStock();refreshHome();renderHistory();renderSellList()}
+catch(e){try{await _replaceAll(snap)}catch(e2){}toast('Restore failed — your old data was kept')}}
+/* startup */
+(function(){const s=document.getElementById('screen-pin');if(s&&!document.getElementById('forgot-pin')){const b=document.createElement('button');b.id='forgot-pin';b.type='button';b.className='btn-secondary';b.textContent='Forgot PIN?';b.onclick=forgotPin;(s.querySelector('.card')||s).appendChild(b)}
+const dd=document.getElementById('s-days');if(dd)dd.value=localStorage.getItem('ledger_credit_days')||'15';
+try{const mx=Number(localStorage.getItem('ledger_max_ts')||0),n=Date.now();if(mx&&n<mx-864e5)setTimeout(()=>alert('Warning: the phone date is earlier than before. Wrong dates break reports and the licence. Please correct the date.'),800);else localStorage.setItem('ledger_max_ts',String(Math.max(mx,n)))}catch(e){}})();
+
+
+function putSale(s){return new Promise((res,rej)=>{const r=db.transaction('sales','readwrite').objectStore('sales').put(s);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function esCartonsChanged(){const c=Number((document.getElementById('es-cartons').value||'').replace(/,/g,''));const p=Number(window._editPpc)||0;if(c>=0&&p>0)document.getElementById('es-qty').value=String(Math.round(c*p*100)/100)}
+const _es=editSale;editSale=async function(i){await _es.apply(this,arguments);const s=(window._histSales||[])[i];if(!s)return;window._editPpc=Number(s.pairsPerCarton)||0;const w=document.getElementById('es-ctn-wrap');if(w){const on=s.cartons!=null&&s.cartons!==''&&window._editPpc>0;w.classList.toggle('hidden',!on);if(on)document.getElementById('es-cartons').value=String(s.cartons)}};
+
+
+async function renderActStockHist(){const el=document.getElementById('act-stockhist');if(!el)return;const rows=(await allStockHistory()).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,100);if(!rows.length){el.innerHTML='No stock entries yet. Add products in Stock to see history here.';return}
+const v=x=>escapeHtml(String(x==null||x===''?'—':x));const ch=(l,a,b)=>(a!==b&&!(a==null&&b==null))?'<div>'+l+': <b>'+v(a)+'</b> → <b>'+v(b)+'</b></div>':'';
+el.innerHTML=rows.map(r=>{const when=displayDate(r.dateKey||r.ts);let d='';
+if(r.edited&&r.from&&r.to){const f=r.from,t=r.to;d='<div><b>Adjusted</b></div>'+ch('Code',f.code,t.code)+ch('Total ctn',f.cartons,t.cartons)+ch('Pcs/ctn',f.ppc,t.ppc)+ch('Total pcs',f.qty,t.qty)+ch('Cost',money(f.cost),money(t.cost))}
+else{const pre=r.edited?'Adjusted ':'Added ';if(r.cartons!=null){const ppc=r.pcsPerCarton!=null?r.pcsPerCarton:(r.cartons&&r.pcs?Math.round(Number(r.pcs)/Number(r.cartons)):null);d=pre+'<b>'+r.cartons+'</b> total ctn';if(ppc)d+=' · <b>'+ppc+'</b> pcs/ctn';d+=' · <b>'+r.pcs+'</b> total pcs'}else d=pre+'<b>'+r.pcs+'</b> total pcs';if(r.cost!=null)d+=' · cost '+money(r.cost)+'/pcs'}
+return '<div style="padding:10px 0;border-bottom:1px solid var(--line)"><div><b>'+escapeHtml(r.code)+'</b> · '+escapeHtml(when)+'</div><div style="font-size:12px;color:var(--muted);margin-top:4px">'+d+'</div></div>'}).join('')}
+
+
+
+const LIC_PUB='MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAELzT0B11NZQb6inTdk4j87Ultoyzl02W/mf/QaAFYwf92dmZX2bLBXiRzcr+SFNggxhozFWLKhT6QAopDfAu4Qw==';
+function _b32d(s){const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';let bits=0,v=0;const o=[];for(const ch of s){const i=A.indexOf(ch);if(i<0)return null;v=(v<<5)|i;bits+=5;if(bits>=8){o.push((v>>>(bits-8))&255);bits-=8}}return new Uint8Array(o)}
+/* ---- licence v3: signed code bound to this phone ---- */
+function _devCheck(s){let t=0;for(let i=0;i<9;i++)t+=parseInt(s[i],16)*(i+1);return (t%16).toString(16).toUpperCase()}
+function deviceId(){let d=localStorage.getItem('ledger_device_id');const ok=/^DV-([0-9A-F]{5})-([0-9A-F]{5})$/.exec(d||'');if(!ok||_devCheck(ok[1]+ok[2])!==ok[2][4]){const x=Array.from(crypto.getRandomValues(new Uint8Array(5)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,9);const s=x+_devCheck(x);d='DV-'+s.slice(0,5)+'-'+s.slice(5);localStorage.setItem('ledger_device_id',d)}return d}
+async function verifyCode(ownerId,code){if(LIC_PUB.indexOf('PASTE')===0)return{ok:false,reason:'This app copy is not prepared. Use Prepare owner app in the admin'};const parts=(code||'').trim().toUpperCase().replace(/\s+/g,'').split('-');if(parts[0]!=='LG3'||!/^\d{6}$/.test(parts[1]||''))return{ok:false,reason:'Invalid code format'};const sig=_b32d(parts.slice(2).join(''));if(!sig||sig.length<64)return{ok:false,reason:'Invalid code format'};const exp='20'+parts[1];
+try{const bin=atob(LIC_PUB),kb=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)kb[i]=bin.charCodeAt(i);const key=await crypto.subtle.importKey('spki',kb,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);if(!(await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,sig.slice(0,64),new TextEncoder().encode('LG3|'+ownerId.trim().toUpperCase()+'|'+deviceId()+'|'+exp))))return{ok:false,reason:'This code is not valid for this phone'}}catch(e){return{ok:false,reason:'Invalid activation code'}}
+const expiry=new Date(+exp.slice(0,4),+exp.slice(4,6)-1,+exp.slice(6,8),23,59,59);if(trustedNow()>expiry.getTime())return{ok:false,reason:'License expired',expiry};return{ok:true,expiry,expStr:exp}}
+async function _licenseGuard(){let lic=null;try{lic=await metaGet('license')}catch(e){}if(!lic){try{lic=JSON.parse(localStorage.getItem('ledger_license_backup')||localStorage.getItem('ledger_license_v1')||'null')}catch(e){}}if(!lic||!lic.ownerId)return;const r=await verifyCode(lic.ownerId,lic.code);if(r.expiry)window._licMs=r.expiry.getTime();if(!r.ok&&r.reason!=='License expired'){await metaSet('license',null);['ledger_license_backup','ledger_license_v1'].forEach(k=>localStorage.removeItem(k));return}if(r.expiry&&lic.expiry!==r.expiry.toISOString()){lic.expiry=r.expiry.toISOString();await metaSet('license',lic);try{localStorage.setItem('ledger_license_backup',JSON.stringify(lic));localStorage.setItem('ledger_license_v1',JSON.stringify(lic))}catch(e){}}}
+const _route0=route;route=async function(){try{const mm=Number(await metaGet('max_ts')||0);if(mm>Number(localStorage.getItem('ledger_max_ts')||0))localStorage.setItem('ledger_max_ts',String(mm))}catch(e){}_tick();try{await _licenseGuard()}catch(e){}if(!_dek&&sessionStorage.getItem('ledger_unlocked')==='1')sessionStorage.removeItem('ledger_unlocked');return _route0.apply(this,arguments)};
+/* ---- data encryption (AES-GCM; data key wrapped by PIN and by recovery code) ---- */
+let _dek=null;const _enc=new TextEncoder(),_dec=new TextDecoder();
+const _b64=u=>btoa(String.fromCharCode(...u)),_unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function _kek(secret,salt){const k=await crypto.subtle.importKey('raw',_enc.encode(secret),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:_unb64(salt),iterations:150000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function _wrap(secret){const salt=_b64(crypto.getRandomValues(new Uint8Array(16))),iv=crypto.getRandomValues(new Uint8Array(12));const raw=new Uint8Array(await crypto.subtle.exportKey('raw',_dek));return{salt,iv:_b64(iv),ct:_b64(new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await _kek(secret,salt),raw)))}}
+async function _unwrap(secret,w){const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:_unb64(w.iv)},await _kek(secret,w.salt),_unb64(w.ct));return crypto.subtle.importKey('raw',raw,'AES-GCM',true,['encrypt','decrypt'])}
+const _CL={products:['code'],sales:['id','dateKey'],stockHistory:['id','dateKey'],orders:['id','dateKey'],payments:['id','orderId']};
+async function _e(store,row){if(!_dek||!row||typeof row!=='object'||row._e)return row;const out={};_CL[store].forEach(k=>{if(row[k]!==undefined)out[k]=row[k]});const iv=crypto.getRandomValues(new Uint8Array(12));out._e=_b64(iv)+'.'+_b64(new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},_dek,_enc.encode(JSON.stringify(row)))));return out}
+async function _d(row){if(!row||!row._e||!_dek)return row;const [iv,ct]=row._e.split('.');const p=JSON.parse(_dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:_unb64(iv)},_dek,_unb64(ct))));Object.keys(row).forEach(k=>{if(k!=='_e')p[k]=row[k]});return p}
+({addOrder:'orders',putOrder:'orders',addPayment:'payments',addStockHistory:'stockHistory',putProduct:'products',addSaleRow:'sales',putSale:'sales'});
+Object.entries({addOrder:'orders',putOrder:'orders',addPayment:'payments',addStockHistory:'stockHistory',putProduct:'products',addSaleRow:'sales',putSale:'sales'}).forEach(([n,s])=>{const f=window[n];window[n]=async function(row){return f(await _e(s,row))}});
+['allOrders','allSales','allProducts','allStockHistory','paymentsForOrder'].forEach(n=>{const f=window[n];window[n]=async function(...x){return Promise.all((await f(...x)).map(_d))}});
+{const f=window.getOrder;window.getOrder=async function(id){return _d(await f(id))}}
+async function allPaymentsDec(){const r=await _all('payments');return Promise.all(r.map(_d))}
+async function _pinStore(p){const salt=rndHex(16);await metaSet('pinv2',{salt,hash:await pinHash(p,salt)});await metaSet('pin','')}
+async function _newDek(){_dek=await crypto.subtle.generateKey({name:'AES-GCM',length:256},true,['encrypt','decrypt'])}
+async function _migrate(){for(const n of _STORES){const rows=await _all(n),out=[];for(const r of rows)if(!r._e)out.push(await _e(n,r));if(!out.length)continue;await new Promise((res,rej)=>{const tx=db.transaction(n,'readwrite'),st=tx.objectStore(n);out.forEach(r=>st.put(r));tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}await metaSet('enc_done',1)}
+async function _unlock(p){try{const w=await metaGet('dek_pin');if(w)_dek=await _unwrap(p,w);else{await _newDek();await metaSet('dek_pin',await _wrap(p))}if(!(await metaGet('enc_done')))await _migrate()}catch(e){_dek=null}}
+async function verifyPin(p){const v=await metaGet('pinv2');let ok=false;if(v&&v.hash)ok=(await pinHash(p,v.salt))===v.hash;else{const old=await metaGet('pin');if(old&&p===old){ok=true;await _pinStore(p)}}if(!ok)return false;await _unlock(p);return !!_dek}
+async function setPin(p){await _pinStore(p);if(!_dek)await _newDek();await metaSet('dek_pin',await _wrap(p))}
+async function ensureRecovery(){try{if(sessionStorage.getItem('ledger_unlocked')!=='1'||!_dek||await metaGet('dek_rec'))return;const code=rndHex(8).toUpperCase().match(/.{4}/g).join('-'),salt=rndHex(16);await metaSet('recov',{salt,hash:await pinHash(code,salt)});await metaSet('dek_rec',await _wrap(code));alert('RECOVERY CODE\n\n'+code+'\n\nWrite it on paper and keep it away from this phone. Your data is encrypted: without your PIN or this code nobody can open it, including us. It is shown only once.')}catch(e){}}
+async function forgotPin(){const r=await metaGet('recov');if(!r){alert('No recovery code exists. Reinstall the app and restore your backup file.');return}const c=(prompt('Enter your recovery code')||'').trim().toUpperCase();if(!c)return;if((await pinHash(c,r.salt))!==r.hash){toast('Wrong recovery code');return}const w=await metaGet('dek_rec');if(w){try{_dek=await _unwrap(c,w)}catch(e){toast('Recovery failed');return}}else if(await metaGet('dek_pin')){alert('This code cannot unlock encrypted data. Reinstall and restore your backup.');return}const n=prompt('New PIN (6+ digits)')||'';if(n.length<6){toast('PIN must be 6+ digits');return}await setPin(n);_dek=null;localStorage.removeItem('ledger_pin_fails');localStorage.removeItem('ledger_pin_lock');toast('PIN changed. Log in with the new PIN')}
+/* ---- password-protected backups ---- */
+async function _maybeEncBackup(t){const pw=prompt('Backup password (recommended). Leave empty for none:')||'';if(!pw){if(!confirm('Save WITHOUT a password? Anyone who gets the file can read your sales and customers.'))throw new Error('cancelled');return t}const salt=_b64(crypto.getRandomValues(new Uint8Array(16))),iv=crypto.getRandomValues(new Uint8Array(12));return JSON.stringify({enc:1,app:'agaze',salt,iv:_b64(iv),ct:_b64(new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await _kek(pw,salt),_enc.encode(t))))})}
+async function _decBackup(o){const pw=prompt('Backup password:')||'';return _dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:_unb64(o.iv)},await _kek(pw,o.salt),_unb64(o.ct)))}
+/* ---- Device ID on the activation screen ---- */
+(function(){const i=document.getElementById('lic-id');if(i&&!document.getElementById('dev-id')){const p=document.createElement('p');p.id='dev-id';p.className='sub';p.innerHTML='Your Device ID: <b>'+deviceId()+'</b> ';const b=document.createElement('button');b.type='button';b.className='btn-secondary btn-sm';b.textContent='Copy';b.onclick=()=>{try{navigator.clipboard.writeText(deviceId());toast('Copied')}catch(e){}};p.appendChild(b);p.appendChild(document.createElement('br'));p.appendChild(document.createTextNode('Send your Owner ID and this Device ID to get your activation code.'));p.appendChild(document.createElement('br'));const w=document.createElement('b');w.textContent='Do not clear app data or reinstall: you will need a new activation code.';p.appendChild(w);i.parentNode.insertBefore(p,i.previousElementSibling)}})();
+
+
+/* licence time can never go backwards, and expiry is enforced live */
+function trustedNow(){let m=0;try{m=Number(localStorage.getItem('ledger_max_ts')||0)}catch(e){}return Math.max(Date.now(),m)}
+function _tick(){try{const n=Date.now();if(n>Number(localStorage.getItem('ledger_max_ts')||0)){localStorage.setItem('ledger_max_ts',String(n));metaSet('max_ts',n)}}catch(e){}}
+function isReadOnly(){return sessionStorage.getItem('ledger_readonly')==='1'||(!!window._licMs&&trustedNow()>window._licMs)}
+setInterval(()=>{_tick();if(window._licMs&&trustedNow()>window._licMs)try{sessionStorage.setItem('ledger_readonly','1')}catch(e){}},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)_tick()});
+
+
+/* ---- share receipt: native chooser if available, otherwise app options ---- */
+async function shareReceipt(){const paper=document.getElementById('receipt-paper');if(!paper)return;const text=(paper.innerText||'').trim(),title=(biz&&biz.name)||'Receipt';
+try{const C=window.Capacitor;if(C&&C.Plugins&&C.Plugins.Share){await C.Plugins.Share.share({title,text,dialogTitle:'Share receipt'});return}}catch(e){if(/cancel/i.test((e&&e.message)||''))return}
+try{if(navigator.share){await navigator.share({title,text});return}}catch(e){if(e&&e.name==='AbortError')return}
+showShareSheet(text,title)}
+function showShareSheet(text,title){let m=document.getElementById('share-sheet');if(m)m.remove();m=document.createElement('div');m.id='share-sheet';m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:5000;display:flex;align-items:flex-end;justify-content:center';
+const box=document.createElement('div');box.style.cssText='background:var(--surface,#fff);color:var(--ink,#111);width:100%;max-width:480px;border-radius:18px 18px 0 0;padding:16px;display:grid;gap:10px';box.innerHTML='<div style="font-weight:800;font-size:16px">Share receipt via</div>';
+const enc=encodeURIComponent,go=u=>{window.location.href=u};
+[['WhatsApp',()=>go('whatsapp://send?text='+enc(text))],['Telegram',()=>go('tg://msg?text='+enc(text))],['SMS',()=>go('sms:?body='+enc(text))],['Email',()=>go('mailto:?subject='+enc(title)+'&body='+enc(text))],['Copy text',async()=>{try{await navigator.clipboard.writeText(text)}catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}toast('Receipt copied')}]].forEach(([l,f])=>{const b=document.createElement('button');b.type='button';b.className='btn-secondary';b.textContent=l;b.onclick=()=>{f();m.remove()};box.appendChild(b)});
+const c=document.createElement('button');c.type='button';c.className='btn-secondary';c.textContent='Cancel';c.onclick=()=>m.remove();box.appendChild(c);m.appendChild(box);m.onclick=e=>{if(e.target===m)m.remove()};document.body.appendChild(m)}
+/* ---- paid amount can never be more than the total ---- */
+{const _cs=completeSale;completeSale=async function(){const el=document.getElementById('s-paid'),cu=document.getElementById('s-customer');const named=cu&&cu.value.trim()&&normCustomer(cu.value)!=='—'&&normCustomer(cu.value)!=='-';if(named&&el&&el.value!==''){const t=cartTotalNum(),p=parseMoneyInput(el.value);if(!isNaN(p)&&p>t+0.001){toast('Paid amount cannot be more than the total ('+money(t)+')');return}}return _cs.apply(this,arguments)}}
+/* ---- pinch to zoom text + Text size button ---- */
+(function(){let z=Number(localStorage.getItem('ledger_zoom'))||1;const save=()=>{try{localStorage.setItem('ledger_zoom',String(z))}catch(e){}};document.body.style.zoom=z;
+let d0=0,z0=1;const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+document.addEventListener('touchstart',e=>{if(e.touches.length===2){d0=dist(e.touches);z0=z}},{passive:true});
+document.addEventListener('touchmove',e=>{if(e.touches.length===2&&d0){e.preventDefault();z=Math.min(1.8,Math.max(.8,z0*dist(e.touches)/d0));document.body.style.zoom=z}},{passive:false});
+document.addEventListener('touchend',e=>{if(e.touches.length<2&&d0){d0=0;save()}},{passive:true});
+window.cycleTextSize=function(){const S=[1,1.15,1.3,1.5];let i=S.findIndex(v=>Math.abs(v-z)<.06);z=S[(i+1)%S.length];document.body.style.zoom=z;save();toast('Text size '+Math.round(z*100)+'%')}})();
+/* ---- thousands separators while typing ---- */
+function _commas(raw){const p=String(raw).replace(/[^0-9.]/g,'').split('.');p[0]=p[0].replace(/^0+(?=\d)/,'').replace(/\B(?=(\d{3})+(?!\d))/g,',');return p.length>1?p[0]+'.'+p.slice(1).join(''):p[0]}
+const _vd=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+function _fmtOk(el){return !!el&&el.tagName==='INPUT'&&/^(text|tel|)$/.test(el.type||'')&&/numeric|decimal/.test(el.getAttribute('inputmode')||'')&&!el.readOnly&&!/pin|phone|lic|owner|code|search|day|year|backup/i.test(el.id||'')}
+function fmtInput(el){const raw=_vd.get.call(el),out=_commas(raw);if(out===raw)return;let db=0;try{db=raw.slice(0,el.selectionStart).replace(/[^0-9.]/g,'').length}catch(e){}_vd.set.call(el,out);try{let n=0,i=0;for(;i<out.length&&n<db;i++)if(/[0-9.]/.test(out[i]))n++;el.setSelectionRange(i,i)}catch(e){}}
+Object.defineProperty(HTMLInputElement.prototype,'value',{get(){const v=_vd.get.call(this);return this.dataset&&this.dataset.fmt==='1'?v.replace(/,/g,''):v},set(v){_vd.set.call(this,v);if(this.dataset&&this.dataset.fmt==='1')fmtInput(this)},configurable:true});
+document.querySelectorAll('input[inputmode]').forEach(el=>{if(_fmtOk(el))el.dataset.fmt='1'});
+document.addEventListener('focusin',e=>{const el=e.target;if(_fmtOk(el)){el.dataset.fmt='1';fmtInput(el)}});
+document.addEventListener('input',e=>{const el=e.target;if(_fmtOk(el)){el.dataset.fmt='1';fmtInput(el)}});
+
+try{localStorage.removeItem('ledger_prices')}catch(e){}
+(function(){const v=document.createElement('div');v.className='sub';v.style.cssText='text-align:center;margin:14px 0 6px';v.textContent='Agaze Pro · version 2026.10.20';const l=document.querySelector('.more-list');if(l&&l.parentNode)l.parentNode.insertBefore(v,l.nextSibling);else{const m=document.getElementById('view-more');if(m)m.appendChild(v)}})();
+{const _pp=putProduct;putProduct=async function(row){if(row&&cfg().usesCartons&&Number(row.pairsPerCarton)>0)row.cartons=Math.floor((Number(row.qty)||0)/Number(row.pairsPerCarton));return _pp.call(this,row)}}
+function cur(){return (typeof biz!=='undefined'&&biz&&biz.currency)||'ETB'}
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ===================================================================
+   Agaze Pro — online layer (Firebase). Everything above this block is
+   the offline Agaze UI/logic; this block swaps the phone storage for
+   Firebase and adds login. Functions here replace the offline ones.
+   =================================================================== */
+const firebaseConfig={
+  apiKey:"AIzaSyBXyCaKn8oKaAwcpDZRdXa2DkJTBl4hLeU",
+  authDomain:"sales-management-system-44913.firebaseapp.com",
+  projectId:"sales-management-system-44913",
+  storageBucket:"sales-management-system-44913.firebasestorage.app",
+  messagingSenderId:"371864004329",
+  appId:"1:371864004329:web:6cb246dfac1f5a55323278"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+try{auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){})}catch(e){}
+const fdb=firebase.firestore();
+try{fdb.enablePersistence({synchronizeTabs:true}).catch(function(){})}catch(e){}
+
+const AG={me:null,bizId:null,bizRef:null,bizDoc:null,unsubs:[],signingUp:false,
+  products:new Map(),sales:new Map(),orders:new Map(),stockH:new Map(),
+  need:0,readyRes:null,ready:Promise.resolve(),busy:{}};
+
+/* ---------- small helpers ---------- */
+function agMs(v){return v&&typeof v.toMillis==='function'?v.toMillis():v}
+function agNorm(d,id){const o={};for(const k in d)o[k]=agMs(d[k]);if(o.id==null)o.id=(/^\d+$/.test(String(id))?Number(id):id);return o}
+function agProd(d,id){const o=agNorm(d,id);o.code=d.code||id;o.qty=Number(d.stock!=null?d.stock:d.qty)||0;delete o.stock;delete o.id;return o}
+function agSale(d,id){const o=agNorm(d,id);if(o.customer==null)o.customer=o.customerName||'—';return o}
+function agClean(o){const r={};for(const k in o){if(o[k]!==undefined)r[k]=o[k]}return r}
+function agPid(code){return String(code).replace(/\//g,'_')}
+function agGenId(){return Date.now()*1000+Math.floor(Math.random()*1000)}
+function agW(p){const t=setTimeout(function(){toast('Waiting for connection…')},4000);return Promise.resolve(p).finally(function(){clearTimeout(t)})}
+function agBar(on){document.body.classList.toggle('agz-busy',!!on)}
+function agCol(n){return AG.bizRef.collection(n)}
+function agStamp(d){if(AG.me){if(d.employeeId==null)d.employeeId=AG.me.uid;if(d.employeeName==null)d.employeeName=AG.me.name||'';if(d.soldByRole==null)d.soldByRole=AG.me.role}return d}
+
+/* ---------- live data → in-memory cache (instant reads) ---------- */
+function agStop(){try{empStop()}catch(e){}AG.unsubs.forEach(function(u){try{u()}catch(e){}});AG.unsubs=[];AG.products.clear();AG.sales.clear();AG.orders.clear();AG.stockH.clear()}
+function agListen(name,q,map,conv,onFirst){
+  let first=true;
+  const done=function(){if(first){first=false;onFirst()}};
+  const u=q.onSnapshot(function(snap){
+    snap.docChanges().forEach(function(ch){
+      const id=ch.doc.id;
+      if(ch.type==='removed')map.delete(conv.key?conv.key(ch.doc.data(),id):id);
+      else{const v=conv.fn(ch.doc.data(),id);if(v)map.set(conv.key?conv.key(ch.doc.data(),id):id,v)}
+    });
+    done();
+  },function(err){
+    if(name==='sales'&&AG.me&&AG.me.role==='employee'&&!AG._salesFallback){
+      AG._salesFallback=true;
+      agListen('sales',agCol('sales').where('employeeId','==',AG.me.uid),map,conv,function(){});
+    }
+    done();
+  });
+  AG.unsubs.push(u);
+}
+function agStart(){
+  agStop();AG._salesFallback=false;AG.need=3;
+  AG.ready=new Promise(function(r){AG.readyRes=r});
+  const one=function(){AG.need--;if(AG.need<=0)AG.readyRes()};
+  agListen('products',agCol('products'),AG.products,{fn:agProd,key:function(d,id){return d.code||id}},one);
+  agListen('sales',agCol('sales'),AG.sales,{fn:function(d,id){return agSale(d,id)},key:function(d,id){return String(id)}},one);
+  agListen('orders',agCol('orders'),AG.orders,{fn:function(d,id){if(d.balance==null&&d.total==null)return null;const o=agNorm(d,id);if(o.customer==null)o.customer=o.customerName||'—';return o},key:function(d,id){return String(id)}},one);
+  agListen('activity',agCol('activity').where('kind','==','stock'),AG.stockH,{fn:function(d,id){return agNorm(d,id)},key:function(d,id){return String(id)}},function(){});
+  AG.unsubs.push(AG.bizRef.onSnapshot(function(s){
+    if(!s.exists)return;AG.bizDoc=s.data();agBuildBiz();
+    if(AG.bizDoc.active===false)agSuspended();
+  },function(){}));
+  setTimeout(function(){if(AG.need>0)AG.readyRes()},8000); // never block the screen forever
+}
+function agClone(m,filter){const a=[];m.forEach(function(v){if(!filter||filter(v))a.push(Object.assign({},v))});return a}
+
+/* ---------- data layer (same function names the offline app uses) ---------- */
+function openDb(){return Promise.resolve()}
+const AGMETA={};
+function metaGet(k){return Promise.resolve(AGMETA[k])}
+function metaSet(k,v){AGMETA[k]=v;return Promise.resolve()}
+async function allProducts(){await AG.ready;return agClone(AG.products)}
+async function allSales(){await AG.ready;return agClone(AG.sales)}
+async function allOrders(){await AG.ready;return agClone(AG.orders)}
+async function allStockHistory(){await AG.ready;return agClone(AG.stockH)}
+async function getOrder(id){await AG.ready;const o=AG.orders.get(String(id));return o?Object.assign({},o):undefined}
+async function paymentsForOrder(orderId){await AG.ready;const o=AG.orders.get(String(orderId));return o&&o.payments?o.payments.map(function(p){return Object.assign({orderId:o.id},p)}):[]}
+async function allPaymentsDec(){await AG.ready;const out=[];AG.orders.forEach(function(o){(o.payments||[]).forEach(function(p){out.push(Object.assign({orderId:o.id},p))})});return out}
+async function putProduct(p){
+  if(p&&cfg().usesCartons&&Number(p.pairsPerCarton)>0)p.cartons=Math.floor((Number(p.qty)||0)/Number(p.pairsPerCarton));
+  const d=agClean(Object.assign({},p));d.stock=Number(p.qty)||0;delete d.qty;delete d.id;
+  AG.products.set(p.code,agProd(d,p.code));
+  await agW(agCol('products').doc(agPid(p.code)).set(d,{merge:true}));
+}
+async function delProduct(code){AG.products.delete(code);await agW(agCol('products').doc(agPid(code)).delete())}
+async function addSaleRow(s){
+  const id=s.id!=null?s.id:agGenId();
+  const d=agStamp(agClean(Object.assign({},s,{id})));d.customerName=d.customer;
+  AG.sales.set(String(id),agSale(d,id));
+  await agW(agCol('sales').doc(String(id)).set(d));return id;
+}
+async function putSale(s){
+  const d=agClean(Object.assign({},s));d.customerName=d.customer;
+  AG.sales.set(String(s.id),agSale(d,s.id));
+  await agW(agCol('sales').doc(String(s.id)).set(d,{merge:true}));return s.id;
+}
+async function updateSaleById(id,data){
+  const cur=AG.sales.get(String(id));if(!cur)throw new Error('missing');
+  const d=agClean(Object.assign({},data));if(d.customer!=null)d.customerName=d.customer;
+  AG.sales.set(String(id),Object.assign({},cur,d));
+  await agW(agCol('sales').doc(String(id)).set(d,{merge:true}));
+}
+async function deleteSaleById(id){AG.sales.delete(String(id));await agW(agCol('sales').doc(String(id)).delete())}
+async function addOrder(row){
+  const id=row.id!=null?row.id:agGenId();
+  const d=agStamp(agClean(Object.assign({},row,{id,v:2})));d.customerName=d.customer;
+  AG.orders.set(String(id),agNorm(d,id));
+  await agW(agCol('orders').doc(String(id)).set(d));return id;
+}
+async function putOrder(row){
+  const d=agClean(Object.assign({},row));delete d.payments;d.customerName=d.customer;
+  const cur=AG.orders.get(String(row.id))||{};
+  AG.orders.set(String(row.id),Object.assign({},cur,agNorm(d,row.id),{payments:cur.payments}));
+  await agW(agCol('orders').doc(String(row.id)).set(d,{merge:true}));return row.id;
+}
+async function addPayment(row){
+  const id=agGenId();const pay=agClean(Object.assign({},row,{id}));delete pay.orderId;
+  const o=AG.orders.get(String(row.orderId));if(o)o.payments=(o.payments||[]).concat([pay]);
+  await agW(agCol('orders').doc(String(row.orderId)).update({payments:firebase.firestore.FieldValue.arrayUnion(pay)}));return id;
+}
+async function addStockHistory(row){
+  const id=agGenId();const d=agStamp(agClean(Object.assign({},row,{id,kind:'stock'})));
+  AG.stockH.set(String(id),agNorm(d,id));
+  await agW(agCol('activity').doc(String(id)).set(d));return id;
+}
+async function nextReceiptNo(){await AG.ready;let m=0;AG.sales.forEach(function(s){const n=Number(s.receiptNo);if(n>m)m=n});AG.orders.forEach(function(o){const n=Number(o.receiptNo);if(n>m)m=n});return String(m+1).padStart(4,'0')}
+/* credit totals follow the sales of their checkout (by orderId) */
+async function syncAllOrders(){try{
+  const r=await Promise.all([allOrders(),allSales()]);const orders=r[0],sales=r[1];const by={};
+  sales.forEach(function(s){if(s.orderId!=null)by[s.orderId]=(by[s.orderId]||0)+(Number(s.revenue)||0)});
+  for(const o of orders){if(o.v!==2)continue;
+    const t=Math.round((by[o.id]||0)*100)/100;const b=Math.max(0,Math.round((t-(Number(o.paid)||0))*100)/100);
+    if(Math.abs(t-(Number(o.total)||0))>0.001||Math.abs(b-(Number(o.balance)||0))>0.001){o.total=t;o.balance=b;await putOrder(o)}}
+}catch(e){}}
+
+/* ---------- access: no licence codes online ---------- */
+function isReadOnly(){return false}
+function assertWritable(){return true}
+function showLicenseBanner(){return null}
+async function updateLicenseBanner(){}
+async function fillLicense(){}
+async function renewLicense(){}
+async function activateLicense(){}
+async function ensureRecovery(){}
+
+/* ---------- screens ---------- */
+function show(id){['screen-boot','screen-license','screen-setup','screen-pin','screen-app'].forEach(function(s){const e=document.getElementById(s);if(e)e.classList.toggle('hidden',s!==id)})}
+function agErrMsg(err){
+  const c=(err&&err.code)||'';
+  if(c==='auth/invalid-credential'||c==='auth/wrong-password'||c==='auth/user-not-found'||c==='auth/invalid-login-credentials')return 'Wrong email or password';
+  if(c==='auth/email-already-in-use')return 'That email already has an account';
+  if(c==='auth/weak-password')return 'Password must be at least 6 characters';
+  if(c==='auth/invalid-email')return 'Enter a valid email';
+  if(c==='auth/too-many-requests')return 'Too many tries. Wait a little and try again';
+  if(c==='auth/network-request-failed')return 'No internet connection';
+  return (err&&err.message)||'Something went wrong';
+}
+let _agSignup=false;
+function authToggle(){
+  _agSignup=!_agSignup;
+  ['au-name-wrap','au-signup-wrap'].forEach(function(i){document.getElementById(i).classList.toggle('hidden',!_agSignup)});
+  document.getElementById('au-go').textContent=_agSignup?'Create account':'Log in';
+  document.getElementById('au-toggle').textContent=_agSignup?'I already have an account':'Create account';
+  document.getElementById('au-forgot').classList.toggle('hidden',_agSignup);
+  document.getElementById('lic-err').classList.add('hidden');
+}
+function authErr(m){const e=document.getElementById('lic-err');e.textContent=m;e.classList.remove('hidden')}
+async function authForgot(){
+  const email=document.getElementById('au-email').value.trim();
+  if(!email){authErr('Enter your email first, then tap Forgot password');return}
+  try{await auth.sendPasswordResetEmail(email);authErr('Password reset email sent — check your inbox')}catch(e){authErr(agErrMsg(e))}
+}
+async function authSubmit(){
+  const email=document.getElementById('au-email').value.trim();
+  const pass=document.getElementById('au-pass').value;
+  const btn=document.getElementById('au-go');
+  document.getElementById('lic-err').classList.add('hidden');
+  if(!email||!pass){authErr('Enter your email and password');return}
+  if(!_agSignup){
+    btn.disabled=true;btn.textContent='Logging in…';
+    try{await auth.signInWithEmailAndPassword(email,pass)}catch(e){authErr(agErrMsg(e))}
+    btn.disabled=false;btn.textContent='Log in';return;
+  }
+  const name=document.getElementById('au-name').value.trim();
+  const code=document.getElementById('au-code').value.trim().toUpperCase();
+  const bizType=document.getElementById('au-type').value;
+  if(!name){authErr('Enter your name');return}
+  if(!code){authErr('Enter your access code');return}
+  btn.disabled=true;btn.textContent='Checking code…';
+  AG.signingUp=true;let cred=null;
+  try{
+    cred=await auth.createUserWithEmailAndPassword(email,pass);
+    const inviteRef=fdb.collection('invites').doc(code);
+    const snap=await inviteRef.get();
+    if(!snap.exists||snap.data().used){await cred.user.delete();cred=null;throw {message:'That access code is invalid or has already been used.'}}
+    const invite=snap.data();
+    if(invite.role==='owner'&&!bizType){await cred.user.delete();cred=null;throw {message:'Please select your business type.'}}
+    const batch=fdb.batch();
+    batch.set(fdb.collection('users').doc(cred.user.uid),{name:name,email:email,phone:null,role:invite.role,businessId:invite.businessId||null,businessType:(invite.role==='owner'?(bizType||null):null),inviteCode:code,active:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    batch.update(inviteRef,{used:true,usedByUid:cred.user.uid,usedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await batch.commit();
+    if(invite.role==='owner'&&invite.businessId&&bizType){try{await fdb.collection('businesses').doc(invite.businessId).update({type:bizType,ownerUid:cred.user.uid})}catch(e){}}
+    AG.signingUp=false;
+    await route();
+  }catch(e){
+    AG.signingUp=false;
+    if(cred&&cred.user){try{await cred.user.delete()}catch(x){}}
+    authErr(agErrMsg(e));
+  }
+  btn.disabled=false;btn.textContent=_agSignup?'Create account':'Log in';
+}
+
+function agBuildBiz(){
+  const b=AG.bizDoc||{};
+  let ty=b.type;
+  const mine=AG.me&&AG.me.role==='owner'?AG.me.businessType:null;
+  if(mine==='importer'||mine==='shoe')ty=mine;
+  const t=(ty==='importer')?'importer':'shoe';
+  biz={name:b.name||'',ownerName:(AG.me&&AG.me.name)||'',phone:b.contactPhone||'',type:t,currency:b.currency||'ETB'};
+}
+function agExpiry(){const e=AG.bizDoc&&AG.bizDoc.subscriptionExpiry;if(!e)return null;const d=e.toDate?e.toDate():new Date(e);return isNaN(d.getTime())?null:d}
+async function agSuspended(){
+  agStop();AG.me=null;
+  try{sessionStorage.removeItem('ledger_unlocked')}catch(e){}
+  try{localStorage.removeItem('agz_last_uid')}catch(e){}
+  try{await auth.signOut()}catch(e){}
+  show('screen-license');authErr('This account is suspended. Please contact your admin.');
+}
+function agProfileCacheKey(uid){return 'agz_profile_v1_'+uid}
+function agSerializeBizDoc(b){
+  if(!b)return null;
+  const o={};
+  Object.keys(b).forEach(function(k){
+    const v=b[k];
+    if(v&&typeof v.toDate==='function')o[k]=v.toDate().toISOString();
+    else if(v&&typeof v.toMillis==='function')o[k]=new Date(v.toMillis()).toISOString();
+    else o[k]=v;
+  });
+  return o;
+}
+function agSaveProfileCache(){
+  try{
+    if(!AG.me||!AG.me.uid)return;
+    localStorage.setItem(agProfileCacheKey(AG.me.uid),JSON.stringify({
+      me:AG.me,
+      bizDoc:agSerializeBizDoc(AG.bizDoc),
+      savedAt:Date.now()
+    }));
+    localStorage.setItem('agz_last_uid',AG.me.uid);
+  }catch(e){}
+}
+function agReadProfileCache(uid){
+  try{
+    const raw=localStorage.getItem(agProfileCacheKey(uid));
+    if(!raw)return null;
+    return JSON.parse(raw);
+  }catch(e){return null}
+}
+function agClearProfileCache(uid){
+  try{
+    if(uid)localStorage.removeItem(agProfileCacheKey(uid));
+    localStorage.removeItem('agz_last_uid');
+  }catch(e){}
+}
+function agApplyCachedProfile(user,cache){
+  AG.me=Object.assign({},cache.me,{uid:user.uid});
+  AG.bizId=AG.me.businessId;
+  AG.bizRef=fdb.collection('businesses').doc(AG.bizId);
+  AG.bizDoc=cache.bizDoc||{};
+  agBuildBiz();
+  agStart();
+  return true;
+}
+async function agLoadProfile(user){
+  let ud=null,bd=null,netFail=false;
+  try{ud=await fdb.collection('users').doc(user.uid).get()}catch(e){netFail=true}
+  if(netFail||!ud){
+    const cache=agReadProfileCache(user.uid);
+    if(cache&&cache.me&&cache.me.businessId){
+      agApplyCachedProfile(user,cache);
+      return true;
+    }
+    show('screen-license');
+    authErr('No internet connection. Connect once to open your account, then PIN is enough.');
+    return false;
+  }
+  if(!ud.exists){
+    agClearProfileCache(user.uid);
+    show('screen-license');authErr('No profile found for this account. Contact your admin.');
+    try{await auth.signOut()}catch(e){}
+    return false;
+  }
+  const p=ud.data();
+  if(p.active===false){agClearProfileCache(user.uid);await agSuspended();return false}
+  if(p.role==='admin'){
+    show('screen-license');authErr('Admin accounts use the admin page.');
+    try{await auth.signOut()}catch(e){}
+    return false;
+  }
+  if(p.disabled||p.deleted||!p.businessId){
+    agClearProfileCache(user.uid);
+    show('screen-license');authErr('Your access was removed. Please contact your business owner.');
+    try{await auth.signOut()}catch(e){}
+    return false;
+  }
+  AG.me={uid:user.uid,name:p.name||'',role:p.role,businessId:p.businessId,businessType:p.businessType||null};
+  AG.bizId=p.businessId;AG.bizRef=fdb.collection('businesses').doc(p.businessId);
+  try{bd=await AG.bizRef.get()}catch(e){netFail=true}
+  if(netFail||!bd){
+    const cache=agReadProfileCache(user.uid);
+    if(cache&&cache.bizDoc){
+      AG.bizDoc=cache.bizDoc;
+      agBuildBiz();agStart();agSaveProfileCache();
+      return true;
+    }
+    show('screen-license');
+    authErr('No internet connection. Connect once to open your account, then PIN is enough.');
+    return false;
+  }
+  if(!bd.exists||bd.data().active===false){agClearProfileCache(user.uid);await agSuspended();return false}
+  AG.bizDoc=bd.data();
+  const ex=agExpiry();if(ex&&ex.getTime()<Date.now()){agClearProfileCache(user.uid);await agSuspended();return false}
+  if(AG.me.role==='owner'&&AG.me.businessType&&AG.bizDoc.type!==AG.me.businessType){
+    AG.bizRef.update({type:AG.me.businessType,ownerUid:user.uid}).catch(function(){});
+  }
+  agBuildBiz();agStart();
+  agSaveProfileCache();
+  try{fdb.collection('users').doc(user.uid).update({lastLoginAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){})}catch(e){}
+  return true;
+}
+function agPinKey(){return 'agz_pin_'+(AG.me?AG.me.uid:'x')}
+async function verifyPin(p){let v=null;try{v=JSON.parse(localStorage.getItem(agPinKey())||'null')}catch(e){}if(!v)return false;return (await pinHash(p,v.salt))===v.hash}
+async function setPin(p){const salt=rndHex(16);localStorage.setItem(agPinKey(),JSON.stringify({salt:salt,hash:await pinHash(p,salt)}))}
+async function saveSetup(){
+  const a=document.getElementById('su-pin').value,b=document.getElementById('su-pin2').value;
+  if(!a||a.length<6){toast('PIN at least 6 digits');return}
+  if(a!==b){toast('PINs do not match');return}
+  await setPin(a);
+  document.getElementById('su-pin').value='';document.getElementById('su-pin2').value='';
+  sessionStorage.setItem('ledger_unlocked','1');try{touchActive()}catch(e){}
+  await openMain();
+}
+async function route(){
+  const user=auth.currentUser;
+  if(!user){show('screen-license');return}
+  if(!AG.me||AG.me.uid!==user.uid){const ok=await agLoadProfile(user);if(!ok)return}
+  if(!localStorage.getItem(agPinKey())){show('screen-setup');return}
+  if(sessionStorage.getItem('ledger_unlocked')==='1'){await openMain();return}
+  const pl=document.getElementById('pin-label');if(pl)pl.textContent=biz.name||'';
+  show('screen-pin');
+}
+async function openMain(){
+  const emp=AG.me.role==='employee';
+  document.body.classList.toggle('role-employee',emp);
+  document.getElementById('app-hi').textContent='Hi, '+(AG.me.name||'')+' 👋';
+  document.getElementById('app-biz').textContent=biz.name+' · '+(cfg().label||biz.type);
+  agLic();
+  applyTypeLabels();show('screen-app');nav(emp?'sell':'home');
+}
+function agLic(){
+  const el=document.getElementById('app-lic');if(!el)return;
+  const ex=agExpiry();
+  if(ex){const days=Math.ceil((ex.getTime()-Date.now())/86400000);el.textContent='Subscription until '+formatAppDate(ex)+' · '+days+' days left'}else el.textContent='';
+}
+async function signOutApp(){
+  const uid=AG.me&&AG.me.uid;
+  agStop();AG.me=null;
+  try{sessionStorage.removeItem('ledger_unlocked')}catch(e){}
+  agClearProfileCache(uid);
+  try{await auth.signOut()}catch(e){}
+  document.getElementById('au-pass').value='';
+  show('screen-license');if(_agSignup)authToggle();
+}
+async function forgotPin(){
+  if(!confirm('To reset your PIN, you will log in again with your email and password and then create a new PIN. Continue?'))return;
+  try{localStorage.removeItem(agPinKey())}catch(e){}
+  await signOutApp();
+}
+async function fillBusinessForm(){
+  const emp=AG.me&&AG.me.role==='employee';
+  document.getElementById('mb-name').value=biz.name||'';
+  document.getElementById('mb-owner').value=biz.ownerName||'';
+  document.getElementById('mb-phone').value=biz.phone||'';
+  document.getElementById('mb-type').value=biz.type||'shoe';
+  document.getElementById('mb-currency').value=biz.currency||'ETB';
+}
+async function saveBusiness(){
+  const name=document.getElementById('mb-name').value.trim();
+  const owner=document.getElementById('mb-owner').value.trim();
+  if(!name||!owner){toast('Name required');return}
+  const phone=document.getElementById('mb-phone').value.trim();
+  const type=document.getElementById('mb-type').value;
+  const currency=document.getElementById('mb-currency').value.trim()||'ETB';
+  let typeErr=null;
+  try{await agW(AG.bizRef.update({name:name,type:type,contactPhone:phone,currency:currency}))}
+  catch(e){typeErr=e;try{await agW(AG.bizRef.update({name:name,contactPhone:phone,currency:currency}))}catch(e2){}}
+  await agW(fdb.collection('users').doc(AG.me.uid).update({name:owner,businessType:type}));
+  AG.me.name=owner;AG.me.businessType=type;
+  biz={name:name,ownerName:owner,phone:phone,type:type,currency:currency};
+  agSaveProfileCache();
+  applyTypeLabels();
+  document.getElementById('app-hi').textContent='Hi, '+owner+' 👋';
+  document.getElementById('app-biz').textContent=name+' · '+(cfg().label||type);
+  if(typeErr)toast('Saved for you. Your employees may still see the old type — tell your admin ('+(typeErr.code||'error')+').');
+  else toast('Profile saved');
+}
+async function fillSubscription(){
+  const ex=agExpiry();
+  if(!ex){document.getElementById('sub-status').textContent='Status: Active';document.getElementById('sub-days').textContent='—';document.getElementById('sub-until').textContent='—';return}
+  const days=Math.ceil((ex.getTime()-Date.now())/86400000);
+  let status='Active';if(days<0)status='Expired';else if(days<=7)status='Expiring soon';
+  document.getElementById('sub-status').textContent='Status: '+status;
+  document.getElementById('sub-days').textContent=days<0?0:days;
+  document.getElementById('sub-until').textContent=formatAppDate(ex);
+}
+
+/* ---------- sale: one atomic, repeat-proof transaction ---------- */
+function agPendingGet(sig){try{const p=JSON.parse(localStorage.getItem('agz_pending_sale')||'null');if(p&&p.uid===AG.me.uid&&p.sig===sig&&Date.now()-p.ts<900000)return p}catch(e){}return null}
+function agPendingSet(p){try{localStorage.setItem('agz_pending_sale',JSON.stringify(p))}catch(e){}}
+function agPendingClear(){try{localStorage.removeItem('agz_pending_sale')}catch(e){}}
+function agIsNet(err){const c=(err&&err.code)||'';return c==='unavailable'||c==='deadline-exceeded'||c==='aborted'||/network|offline|timeout|unavailable/i.test((err&&err.message)||'')}
+
+async function completeSale(){
+  if(window._saleBusy)return;          // lock synchronously before any await
+  window._saleBusy=true;
+  const btn=document.querySelector('#view-sell button[onclick="completeSale()"]');
+  const originalText=btn?btn.textContent:'Complete sale';
+  if(btn){btn.disabled=true;btn.textContent='Saving…';btn.setAttribute('aria-busy','true');}
+  agBar(true);
+  try{await agSaleInner()}
+  finally{
+    window._saleBusy=false;agBar(false);
+    if(btn){btn.disabled=false;btn.textContent=originalText;btn.removeAttribute('aria-busy');}
+  }
+}
+async function agSaleInner(){
+  if(!cart.length){toast('Add at least one product');return}
+  const c=cfg();
+  for(const item of cart){
+    if(item.price===''||item.price==null||isNaN(Number(item.price))||Number(item.price)<0){toast('Enter price for every item');return}
+    if(!item.qty||Number(item.qty)<=0){toast('Enter quantity for every item');return}
+  }
+  const products=await allProducts();
+  for(const item of cart){
+    const p=products.find(function(x){return x.code===item.code});
+    const have=p?(Number(p.qty)||0):0;
+    if(!p||Number(item.qty)>have){toast('Only '+have+' left for '+item.code);return}
+  }
+  const total=cartTotalNum();
+  const customerRaw=(document.getElementById('s-customer')||{}).value||'';
+  const customer=normCustomer(customerRaw);
+  const isWalkIn=(customer==='—'||customer==='-'||!customerRaw.trim());
+  let paid,balance,phone='';
+  if(isWalkIn){paid=total;balance=0;phone=''}
+  else{
+    phone=((document.getElementById('s-phone')||{}).value||'').trim();
+    const paidRaw=(document.getElementById('s-paid')||{}).value;
+    paid=(paidRaw===''||paidRaw==null)?total:parseMoneyInput(paidRaw);
+    if(isNaN(paid)||paid<0){toast('Enter a valid amount paid');return}
+    if(paid>total+0.001){toast('Paid amount cannot be more than the total ('+money(total)+')');return}
+    balance=Math.max(0,Math.round((total-paid)*100)/100);
+  }
+  const below=[];
+  for(const item of cart){
+    const p=products.find(function(x){return x.code===item.code});
+    const cost=Number(p&&p.cost)||0;
+    if(Number(item.price)<cost)below.push(item.code+' ('+money(item.price)+' < cost '+money(cost)+')');
+  }
+  if(below.length){if(!confirm('Sale price is below cost:\n'+below.join('\n')+'\n\nContinue anyway?'))return}
+  const btn=document.querySelector('[onclick="completeSale()"]');
+  if(btn){btn.disabled=true;btn.textContent='Saving…'}
+  try{
+    const tk=todayKey(),mk=monthKey();
+    const items=cart.map(function(i){return {code:i.code,name:i.name,qty:Number(i.qty),price:Number(i.price),cartons:(i.cartons!==''&&i.cartons!=null)?Number(i.cartons):null}});
+    const sig=JSON.stringify([customer,phone,paid,total,items.map(function(i){return [i.code,i.qty,i.price,i.cartons]})]);
+    // same cart => same ids, so a retry can never record the sale twice
+    let att=agPendingGet(sig);
+    if(!att){att={uid:AG.me.uid,sig:sig,A:agGenId(),receiptNo:await nextReceiptNo(),ts:Date.now()};agPendingSet(att)}
+    const A=att.A,receiptNo=att.receiptNo,n=items.length;
+    const saleRef=function(i){return agCol('sales').doc(String(A+i))};
+    const orderRef=agCol('orders').doc(String(A));
+    const codes=Array.from(new Set(items.map(function(i){return i.code})));
+    const pRef=function(code){return agCol('products').doc(agPid(code))};
+    const res=await fdb.runTransaction(async function(tx){
+      const first=await tx.get(saleRef(0));
+      if(first.exists){ // an earlier attempt already saved this sale
+        const lines=[];let rev=0;
+        for(let i=0;i<n;i++){const sd=i===0?first:await tx.get(saleRef(i));if(!sd.exists)continue;const d=sd.data();
+          lines.push({code:d.code,qty:d.qty,price:d.price,revenue:d.revenue,cartons:d.cartons!=null?d.cartons:null,pairsPerCarton:d.pairsPerCarton||null});rev+=Number(d.revenue)||0}
+        const od=await tx.get(orderRef);
+        return {already:true,lines:lines,total:rev,paid:od.exists?Number(od.data().paid)||0:rev,balance:od.exists?Number(od.data().balance)||0:0,receiptNo:first.data().receiptNo};
+      }
+      const snaps=await Promise.all(codes.map(function(cd){return tx.get(pRef(cd))}));
+      const stock={},prod={};
+      codes.forEach(function(cd,k){
+        if(!snaps[k].exists){const e=new Error(cd+' is no longer in stock');e.agz=1;throw e}
+        const d=snaps[k].data();prod[cd]=d;stock[cd]=Number(d.stock!=null?d.stock:d.qty)||0;
+      });
+      const need={};items.forEach(function(i){need[i.code]=(need[i.code]||0)+i.qty});
+      for(const cd of codes){if(need[cd]>stock[cd]){const e=new Error('Only '+stock[cd]+' left for '+cd);e.agz=1;throw e}}
+      const lines=[],rows=[];let totalRev=0;
+      items.forEach(function(it,i){
+        const p=prod[it.code];const cost=Number(p.cost)||0;const ppc=Number(p.pairsPerCarton)||null;
+        const revenue=it.qty*it.price;const profit=revenue-it.qty*cost;
+        let cartonsSold=null;
+        if(c.usesCartons){if(it.cartons!=null)cartonsSold=it.cartons;else if(ppc)cartonsSold=it.qty/ppc}
+        lines.push({code:it.code,qty:it.qty,price:it.price,revenue:revenue,cartons:cartonsSold,pairsPerCarton:ppc||null});
+        rows.push({id:A+i,code:it.code,name:it.name,qty:it.qty,price:it.price,revenue:revenue,profit:profit,customer:customer,customerName:customer,phone:phone,cartons:cartonsSold,pairsPerCarton:ppc||null,dateKey:tk,monthKey:mk,ts:Date.now(),receiptNo:receiptNo,orderId:A,employeeId:AG.me.uid,employeeName:AG.me.name||'',soldByRole:AG.me.role});
+        totalRev+=revenue;
+      });
+      const newStock={};
+      codes.forEach(function(cd){
+        const left=Math.max(0,stock[cd]-need[cd]);newStock[cd]=left;
+        const upd={stock:left};const ppc=Number(prod[cd].pairsPerCarton)||0;
+        if(c.usesCartons&&ppc)upd.cartons=left>0?Math.floor(left/ppc):0;
+        tx.update(pRef(cd),upd);
+      });
+      rows.forEach(function(r,i){tx.set(saleRef(i),r)});
+      let order=null;
+      if(!isWalkIn&&balance>0){
+        order={id:A,v:2,receiptNo:receiptNo,customer:customer,customerName:customer,phone:phone,total:total,paid:paid,balance:balance,dueDate:dueFromForm(),dateKey:tk,monthKey:mk,ts:Date.now(),lines:lines.map(function(l){return {code:l.code,qty:l.qty,price:l.price,revenue:l.revenue}}),employeeId:AG.me.uid,employeeName:AG.me.name||'',soldByRole:AG.me.role};
+        if(paid>0)order.payments=[{id:A,amount:paid,dateKey:tk,ts:Date.now(),note:'At sale'}];
+        tx.set(orderRef,order);
+      }
+      return {already:false,lines:lines,total:totalRev,paid:paid,balance:balance,receiptNo:receiptNo,rows:rows,order:order,newStock:newStock};
+    });
+    agPendingClear();
+    if(!res.already){ // show the new numbers immediately, the live listener confirms them
+      res.rows.forEach(function(r){AG.sales.set(String(r.id),agSale(r,r.id))});
+      Object.keys(res.newStock).forEach(function(cd){const p=AG.products.get(cd);if(p){p.qty=res.newStock[cd];const ppc=Number(p.pairsPerCarton)||0;if(c.usesCartons&&ppc)p.cartons=p.qty>0?Math.floor(p.qty/ppc):0}});
+      if(res.order)AG.orders.set(String(res.order.id),agNorm(res.order,res.order.id));
+    }
+    toast(res.balance>0?('Sale saved · balance '+money(res.balance)):(isWalkIn?'Sale completed':'Sale for '+customer+' completed'));
+    clearCart();
+    const paidInp=document.getElementById('s-paid');if(paidInp)paidInp.value='';
+    const phoneInp=document.getElementById('s-phone');if(phoneInp)phoneInp.value='';
+    const custInp=document.getElementById('s-customer');if(custInp)custInp.value='';
+    onCustomerInput();
+    loadCustomerSuggestions();
+    renderSellList();refreshHome();
+    showReceipt({customerName:customer,lines:res.lines,totalRevenue:res.total,receiptNo:res.receiptNo,paid:isWalkIn?res.total:res.paid,balance:isWalkIn?0:res.balance,phone:phone});
+  }catch(err){
+    if(agIsNet(err)){toast('Connection problem — your sale may not be saved. Tap Complete sale again to check; it will never be recorded twice.')}
+    else{agPendingClear();toast((err&&err.code==='permission-denied')?'Not allowed for this account':(err&&err.message)||'Could not complete sale')}
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Complete sale'}
+  }
+}
+
+/* ---------- repeat-tap protection for every save-type action ---------- */
+['addProduct','saveEditProd','saveEditSale','deleteSale','submitPayment','saveBusiness','changePin','saveSetup','authSubmit'].forEach(function(n){
+  const f=window[n];if(typeof f!=='function')return;
+  window[n]=async function(){
+    if(AG.busy[n])return;
+    AG.busy[n]=true;
+    const selector={'addProduct':'#view-stock button[onclick="addProduct()"]','saveEditProd':'#edit-prod-modal button[onclick="saveEditProd()"]','saveEditSale':'#edit-sale-modal button[onclick="saveEditSale()"]','submitPayment':'#pay-modal button[onclick="submitPayment()"]','saveBusiness':'#ms-business button[onclick="saveBusiness()"]','changePin':'#ms-pin button[onclick="changePin()"]','saveSetup':'#screen-setup button[onclick="saveSetup()"]','authSubmit':'#au-go'}[n];
+    const btn=selector?document.querySelector(selector):null;
+    const oldText=btn?btn.textContent:'';
+    if(btn){btn.disabled=true;btn.textContent=(n==='addProduct'?'Saving stock…':'Saving…');btn.setAttribute('aria-busy','true');}
+    agBar(true);
+    try{return await f.apply(this,arguments)}
+    finally{
+      AG.busy[n]=false;agBar(false);
+      if(btn){btn.disabled=false;btn.textContent=oldText;btn.removeAttribute('aria-busy');}
+    }
+  };
+});
+window.addEventListener('unhandledrejection',function(e){try{toast('Could not save — check your connection')}catch(x){}});
+
+/* ---------- start ---------- */
+(function(){const f=document.getElementById('forgot-pin');if(f)f.onclick=function(){forgotPin()}})();
+/* Stay logged in after first email login. Only PIN is needed until user taps Sign out. */
+var _agAuthFirst=true;
+
+/* ---------- owner: employees ---------- */
+let _empU=[],_empLock=false,_empInv=[],_empUsers=[];
+function empStop(){_empU.forEach(function(u){try{u()}catch(e){}});_empU=[]}
+function empCode7(){const c='ABCDEFGHJKMNPQRSTUVWXYZ23456789';const a=new Uint32Array(7);crypto.getRandomValues(a);let o='';for(let i=0;i<7;i++)o+=c[a[i]%c.length];return o}
+function empStart(){
+  empStop();
+  if(!AG.me||AG.me.role!=='owner')return;
+  const mine=function(i){return i.role==='employee'&&i.businessId===AG.me.businessId};
+  _empU.push(fdb.collection('invites').onSnapshot(function(s){_empInv=s.docs.map(function(d){return Object.assign({code:d.id},d.data())}).filter(mine);empRender()},function(e){
+    _empU.push(fdb.collection('invites').where('businessId','==',AG.me.businessId).onSnapshot(function(s){_empInv=s.docs.map(function(d){return Object.assign({code:d.id},d.data())}).filter(function(i){return i.role==='employee'});empRender()},function(){}))}));
+  _empU.push(fdb.collection('users').where('businessId','==',AG.me.businessId).onSnapshot(function(s){
+    _empUsers=s.docs.map(function(d){return Object.assign({uid:d.id},d.data())}).filter(function(u){return u.role==='employee'&&!u.disabled&&!u.deleted});empRender()},function(){}));
+}
+function empRender(){
+  const c=document.getElementById('emp-codes'),l=document.getElementById('emp-list');if(!c||!l)return;
+  const un=_empInv.filter(function(i){return !i.used});
+  c.innerHTML=un.length?un.map(function(i){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><b style="letter-spacing:2px;font-size:16px">'+escapeHtml(i.code)+'</b><span><button type="button" class="btn-secondary btn-sm" onclick="empCopy(\''+escapeHtml(i.code)+'\')">Copy</button><button type="button" class="btn-primary btn-sm" onclick="empSend(\''+escapeHtml(i.code)+'\')">Send</button></span></div>'}).join(''):'No unused codes.';
+  l.innerHTML=_empUsers.length?_empUsers.map(function(u){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><span><b>'+escapeHtml(u.name||'—')+'</b><br><span style="font-size:12px">'+escapeHtml(u.email||'')+'</span></span><button type="button" class="btn-danger btn-sm" onclick="removeEmployee(\''+escapeHtml(u.uid)+'\')">Remove</button></div>'}).join(''):'No employees yet.';
+}
+async function createEmpCode(){
+  if(_empLock)return;_empLock=true;
+  try{
+    const code=empCode7();
+    await agW(fdb.collection('invites').doc(code).set({role:'employee',businessId:AG.me.businessId,used:false,createdBy:AG.me.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp()}));
+    document.getElementById('emp-new-code').textContent=code;document.getElementById('emp-new').classList.remove('hidden');
+    toast('Code created — give it to your employee');
+  }catch(e){toast('Could not create code: '+((e&&e.code==='permission-denied')?'not allowed — tell your admin':(e&&e.message)||'error'))}
+  _empLock=false;
+}
+async function empCopy(t){try{await navigator.clipboard.writeText(t);toast('Copied')}catch(e){const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast('Copied')}}
+async function empSend(code){
+  const link=/^https?:/.test(location.protocol)?(location.href.split('#')[0].split('?')[0]):'';
+  const t='Agaze Pro — employee access code for '+(biz&&biz.name||'my business')+': '+code+'\n\n'+(link?'1) Open: '+link+'\n2) ':'1) Open the Agaze Pro app\n2) ')+'Tap "Create account"\n3) Type your name, email, password and this code.';
+  try{if(navigator.share){await navigator.share({text:t});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{showShareSheet(t,'Agaze Pro')}catch(e){empCopy(t)}
+}
+async function removeEmployee(uid){
+  if(!confirm('Remove this employee?\n\nTheir past sales stay in your reports. Only their login is removed.'))return;
+  try{await agW(fdb.collection('users').doc(uid).update({disabled:true,businessId:null,removedAt:firebase.firestore.FieldValue.serverTimestamp(),removedBy:AG.me.uid}));_empUsers=_empUsers.filter(function(u){return u.uid!==uid});empRender();toast('Employee removed')}
+  catch(e){toast('Could not remove: '+((e&&e.code==='permission-denied')?'not allowed — tell your admin':(e&&e.message)||'error'))}
+}
+
+auth.onAuthStateChanged(function(user){
+  if(AG.signingUp)return;
+  if(!user){
+    AG.me=null;agStop();
+    /* Keep boot visible briefly only on the very first null before restore; then show login */
+    show('screen-license');
+    return;
+  }
+  _agAuthFirst=false;
+  route();
+});
+
+</script>
+</body>
+</html>
